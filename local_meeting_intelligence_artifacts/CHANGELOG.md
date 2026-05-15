@@ -9,6 +9,7 @@ Added:
 - executable pack validation script
 - validation bootstrap dependencies
 - handoff readiness assessment
+- two-host deployment topology and environment notes
 - wrapper schemas for chunk extraction, missed-detail scanning, evidence merge, claim maps, and canonical transcript segments
 - required coverage and claim-audit fields in validation results
 - stricter report-section schema with integrity notes and required subsection coverage
@@ -29,6 +30,9 @@ Changed:
 - benchmark manifest now includes ASR, diarization, repair-loop, and unknown-speaker gates
 - Docker Compose skeleton now uses digest placeholders, secrets, health checks, and model registry mounts
 - architecture plan now distinguishes candidate model-card evidence from local runtime proof
+- pipeline config now models `10.25.0.50` and `10.25.0.51` as separate hosts
+- orchestrator state machine now starts with deployment preflight
+- GPU model eviction is recorded as authorized while preserving non-model services
 
 Not changed:
 - workbook remains the v0.1 decision matrix and has not been edited

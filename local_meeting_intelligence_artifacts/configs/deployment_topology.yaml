@@ -1,0 +1,118 @@
+version: 0.3
+purpose: two_host_gpu_deployment_topology
+last_verified_utc: "2026-05-15T05:41:43Z"
+
+eviction_policy:
+  gpu_model_eviction_authorized: true
+  scope: gpu_resident_model_runtime_containers_only
+  preserve_unless_explicitly_authorized:
+    - app_control_plane_services
+    - databases
+    - object_storage
+    - Open WebUI
+    - Parallax
+    - Structura
+    - Datum
+  required_eviction_steps:
+    - inspect_container_restart_policy
+    - set_restart_policy_to_no
+    - stop_or_remove_model_container
+    - verify_no_gpu_compute_processes_remain
+    - verify_gpu_memory_returns_to_idle
+
+hosts:
+  gpu_node_4000_pair:
+    hostname: "620-01"
+    address: "10.25.0.50"
+    ssh: "ssh -i /Users/brennanconley/vibecode/infx/ubuntu24_ed25519 bgconley@10.25.0.50"
+    role:
+      - control_plane
+      - asr_and_diarization_candidate
+      - extractor_gpu
+      - validator_gpu
+      - storage_and_operator_ui
+    hardware:
+      machine: "Lenovo ThinkStation P620"
+      cpu: "AMD Ryzen Threadripper PRO 3945WX"
+      ram_gb: 128
+      gpus:
+        - index: 0
+          name: "NVIDIA RTX PRO 4000 Blackwell"
+          memory_mib: 24467
+        - index: 1
+          name: "NVIDIA RTX PRO 4000 Blackwell"
+          memory_mib: 24467
+      storage:
+        zfs_pool: tank
+        last_verified_pool_status: ONLINE
+        last_verified_free: "3.08T"
+    current_eviction_state:
+      verified_utc: "2026-05-15T05:41:43Z"
+      stopped_model_containers:
+        - planner-sglang
+        - reviewer-sglang
+      restart_policy_after_eviction: "no"
+      gpu_memory_used_mib_after_eviction:
+        gpu0: 2
+        gpu1: 2
+      compute_processes_after_eviction: []
+    known_local_services_to_preserve:
+      - name: qwen36-open-webui
+        port: "10.25.0.50:3000"
+      - name: agent-orchestrator
+        port: "10.25.0.50:8080"
+      - name: parallax-api
+        port: "127.0.0.1:18000"
+      - name: structura-api
+        port: "127.0.0.1:8000"
+      - name: datum-api
+        port: "127.0.0.1:8001"
+    recommended_meeting_intelligence_ports:
+      asr_diarization_service: 18100
+      extractor_service: 18120
+      validator_service: 18121
+      control_plane_api: 18180
+
+  builder_96gb:
+    hostname: "blackbird"
+    address: "10.25.0.51"
+    ssh: "ssh -i /Users/brennanconley/vibecode/infx/ubuntu24_ed25519 bgconley@10.25.0.51"
+    role:
+      - large_context_builder
+      - final_section_synthesis
+      - heavy_reasoning_candidate
+    hardware:
+      gpu:
+        index: 0
+        name: "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition"
+        memory_mib: 97887
+    current_eviction_state:
+      verified_utc: "2026-05-15T05:41:43Z"
+      stopped_model_containers:
+        - qwen36-35b-a3b-bf16-server
+      restart_policy_after_eviction: "no"
+      gpu_memory_used_mib_after_eviction:
+        gpu0: 2
+      compute_processes_after_eviction: []
+    last_known_builder_endpoint_before_eviction:
+      base_url: "http://10.25.0.51:18002/v1"
+      served_model: "qwen36-35b-a3b-bf16"
+      root_model: "Qwen/Qwen3.6-35B-A3B"
+      max_model_len: 262144
+    recommended_meeting_intelligence_ports:
+      builder_service: 18130
+
+preflight_required_before_each_run:
+  - ssh_to_each_host
+  - docker_ps_for_model_runtimes
+  - nvidia_smi_gpu_memory_and_compute_processes
+  - curl_v1_models_for_any_expected_model_endpoint
+  - verify_required_ports_are_free_or_intentionally_reused
+  - verify_zfs_pool_tank_is_mounted_on_10_25_0_50
+  - write_preflight_report_to_run_artifacts
+
+artifact_transfer:
+  canonical_storage_host: "10.25.0.50"
+  canonical_storage_root: "/tank/models/local-meeting-intelligence"
+  builder_input_policy: "copy_curated_evidence_and_section_inputs_to_builder_host_or_call_builder_over_private_lan"
+  final_report_policy: "write_final_report_and_evidence_appendix_back_to_canonical_storage_host"

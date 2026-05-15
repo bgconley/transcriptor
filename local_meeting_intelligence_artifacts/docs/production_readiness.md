@@ -2,7 +2,7 @@
 
 This pack is closer to implementation-ready after the v0.2 hardening pass, but
 it is not production-ready until the gates below are satisfied on the real
-workstation.
+two-host GPU environment.
 
 ## Readiness Rating
 
@@ -10,7 +10,8 @@ workstation.
 - Model recommendations: plausible candidates, not final selections.
 - Schemas and prompts: now buildable enough for a harness.
 - Runtime plan: still requires local proof.
-- Deployment plan: template only.
+- Deployment plan: explicit two-host topology, but every run still requires
+  live preflight because model residency and ports can drift.
 
 ## Must-Pass Gates
 
@@ -19,18 +20,25 @@ workstation.
      runtime.
    - Record inventory in `hardware_inventory.yaml`.
 
-2. Model Registry
+2. Deployment Preflight
+   - Use `configs/deployment_topology.yaml` as the host map.
+   - Verify SSH, Docker model containers, restart policies, `nvidia-smi`,
+     `/v1/models`, required ports, and ZFS `tank` before model work starts.
+   - GPU model eviction is authorized, but non-model app/data services must be
+     preserved unless explicitly authorized.
+
+3. Model Registry
    - Copy `configs/model_registry.template.yaml` to `configs/model_registry.yaml`.
    - Pin exact revisions, local paths, licenses, quantization sources, and
      SHA256 manifests.
    - Mark each model as `candidate`, `approved`, or `rejected`.
 
-3. Runtime Matrix
+4. Runtime Matrix
    - Fill `configs/runtime_matrix.yaml` with exact vLLM, SGLang, and
      llama.cpp/GGUF versions tested.
    - Record max context, KV-cache capacity, VRAM, tokens/sec, and failure modes.
 
-4. Schema Harness
+5. Schema Harness
    - Validate every JSONL row and every model response against the schema named
      in `configs/pipeline_config.yaml`.
    - Reject model responses with commentary, reasoning traces, missing wrapper
@@ -38,31 +46,31 @@ workstation.
    - Load all local schemas into an offline registry before validation so
      `$ref` resolution never attempts a network fetch.
 
-5. Golden Set
+6. Golden Set
    - Annotate at least 5 meetings before selecting production models.
    - Include corrected speaker maps, technical terms, gold requirements, risks,
      open questions, decisions, action items, environment facts, and seeded bad
      claims.
 
-6. ASR and Diarization Proof
+7. ASR and Diarization Proof
    - Benchmark Parakeet against Whisper/WhisperX on the user's real meeting
      audio.
    - Measure technical term errors, numeric/IP/version/date errors, and
      speaker ownership reversals.
 
-7. Claim Validation
+8. Claim Validation
    - The validator must catch seeded unsupported claims and omitted critical
      facts.
    - Empty coverage objects are invalid.
    - Any critical finding blocks final publication.
 
-8. No-Egress Proof
+9. No-Egress Proof
    - Pre-stage all model files.
    - Start services with offline flags.
    - Verify DNS and outbound traffic are blocked at the host or network layer.
    - Confirm no runtime model download occurs.
 
-9. Human Review Queue
+10. Human Review Queue
    - Low-confidence speaker ownership, ambiguous customer/Nutanix attribution,
      and high-impact ASR disagreements must be routed to review before final
      assembly.
@@ -72,12 +80,13 @@ workstation.
 1. Implement schema validation utilities.
 2. Implement canonical transcript JSONL and segment hashing.
 3. Build the model registry loader and hash verifier.
-4. Build ASR/diarization comparison and speaker-review export.
-5. Build domain extraction with retry and repair.
-6. Build missed-detail scanning and consolidation.
-7. Build Postgres persistence and Qdrant indexing.
-8. Build section synthesis and claim-map validation.
-9. Build validation, repair, final assembly, and benchmark reporting.
+4. Build deployment preflight and runtime probes.
+5. Build ASR/diarization comparison and speaker-review export.
+6. Build domain extraction with retry and repair.
+7. Build missed-detail scanning and consolidation.
+8. Build Postgres persistence and Qdrant indexing.
+9. Build section synthesis and claim-map validation.
+10. Build validation, repair, final assembly, and benchmark reporting.
 
 ## Remaining Risks
 
@@ -88,5 +97,7 @@ workstation.
 - pyannote Community-1 has access/terms requirements and should be staged
   offline before no-egress mode.
 - Docker Compose `internal: true` is not enough to prove no public egress.
+- Historical model endpoints such as `:18002` may be stale; probe `/v1/models`
+  before every run.
 - The workbook is a v0.1 planning matrix and should not be treated as the
   implementation source of truth.

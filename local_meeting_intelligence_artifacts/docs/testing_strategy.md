@@ -22,6 +22,8 @@ while implementing the workflow.
 3. Boundary tests
    - Model registry blocks unpinned or unlicensed models in production mode.
    - Runtime probes record measured facts instead of assumed context.
+   - Deployment preflight rejects unexpected model residency, mismatched model
+     IDs, missing ZFS storage, or occupied required ports.
    - Model responses with reasoning traces or malformed JSON are rejected.
    - Unknown speakers are never converted to customer by default.
 

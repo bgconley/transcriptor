@@ -101,21 +101,27 @@ slices:
       - offline_mode_does_not_download
 
   - id: LMI-005
-    title: Runtime probe and matrix update
+    title: Deployment preflight, runtime probe, and matrix update
     priority: p0
     owner_scope:
+      - src/deployment_preflight/
       - src/runtime_probe/
+      - configs/deployment_topology.yaml
       - configs/runtime_matrix.yaml
       - tests/test_runtime_probe*
     inputs:
+      - configs/deployment_topology.yaml
       - model_registry.yaml
       - target_gpu_inventory
     outputs:
+      - deployment_preflight_report.json
       - runtime_probe_results.json
       - updated_runtime_matrix.yaml
     acceptance_commands:
-      - pytest tests/test_runtime_probe.py
+      - pytest tests/test_deployment_preflight.py tests/test_runtime_probe.py
     pass_criteria:
+      - verifies_expected_hosts_and_ports
+      - rejects_unexpected_gpu_resident_models
       - records_driver_cuda_runtime_versions
       - records_context_capacity_and_peak_vram
       - rejects_repeated_runtime_failures

@@ -4,7 +4,7 @@ Status: ready for an agentic coder to implement and test the workflow.
 
 Production status: not production-ready until the runtime, model registry,
 license, no-egress, golden-set, and end-to-end report gates are proven on the
-target workstation.
+target two-host GPU environment.
 
 ## Why This Is Ready for Implementation Handoff
 
@@ -19,6 +19,8 @@ target workstation.
 - The report contract defines the required 19-section output shape.
 - The model and runtime claims are marked as candidates until local proof is
   captured.
+- The deployment topology is explicit for `10.25.0.50` and `10.25.0.51`,
+  including authorized GPU model eviction and required preflight checks.
 
 ## First Agent Actions
 
@@ -59,9 +61,11 @@ An implementation agent must not:
 
 - Exact model revisions, licenses, local paths, and SHA256 hashes must be
   pinned in a real `configs/model_registry.yaml`.
-- Runtime matrix values must be measured on the target workstation, including
+- Runtime matrix values must be measured on the target two-host GPU environment, including
   context length, KV-cache behavior, peak VRAM, latency, failure modes, driver
   version, CUDA version, and inference runtime version.
+- The deployment preflight must be captured for each run because GPU residency
+  and exposed model endpoints can drift.
 - ASR and diarization quality must be benchmarked against representative
   meeting audio, including overlap and ambiguous ownership cases.
 - Offline/no-egress mode must be proven outside the application layer.

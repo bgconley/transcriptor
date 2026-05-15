@@ -9,10 +9,9 @@ and model registry templates are present, and production gates are called out.
 Purpose: build a private, local, evidence-preserving meeting-analysis pipeline for corporate call recordings.
 
 Core design:
-- 4000 GPU A: exhaustive structured fact gathering from canonical transcript chunks.
-- 4000 GPU B: independent validation, claim checking, and missed-detail scanning.
-- 96GB GPU: heavy critical thinker / synthesis builder that creates the final 19-section architectural report from curated evidence, not from raw transcript alone.
-- CPU/control plane: deterministic orchestration, schema validation, evidence storage, retrieval, report assembly, and audit logging.
+- `10.25.0.50` / `620-01`: dual RTX PRO 4000 Blackwell host for control plane, ASR/diarization, extraction, validation, storage, and operator UI.
+- `10.25.0.51` / `blackbird`: RTX PRO 6000 Blackwell Max-Q host for large-context builder/synthesis.
+- CPU/control plane: deterministic orchestration, schema validation, evidence storage, retrieval, report assembly, audit logging, and cross-host preflight.
 
 Primary model decision:
 - 96GB builder candidate: Mistral Medium 3.5 128B, quantized.
@@ -28,6 +27,9 @@ Production hardening decisions added in v0.2:
 - Every final claim requires evidence IDs and segment IDs, unless explicitly labeled `not_stated`.
 - Model cards are evidence for candidacy, not proof of local fit. Exact quantization, runtime, context, latency, and license status must be pinned and benchmarked.
 - The Docker Compose file is a skeleton with fail-closed placeholders; image digests, secrets, host firewall egress rules, and model hashes are required before use.
+- Deployment is a two-host topology, not one three-GPU box. GPU model eviction
+  is authorized, but non-model app/data services must be preserved unless
+  explicitly authorized.
 
 Included artifacts:
 - MANIFEST_v0.2.md: source-of-truth map and template/readiness status.
@@ -40,6 +42,8 @@ Included artifacts:
 - docs/model_evidence_register.md: researched evidence and interpretation by model/component.
 - docs/report_contract.md: required 19-section output contract and evidence expectations.
 - docs/production_readiness.md: build order, gates, and remaining production blockers.
+- docs/deployment_environment.md: two-host deployment posture, eviction policy,
+  ports, and required preflight.
 - docs/testing_strategy.md: required unit, boundary, integration, and end-to-end tests.
 - docs/agentic_coder_review_checklist.md: per-slice review checklist.
 - docs/handoff_readiness_assessment.md: direct implementation-handoff status
@@ -49,6 +53,8 @@ Included artifacts:
 - configs/docker_compose_skeleton.yml: local service skeleton.
 - configs/model_registry.template.yaml: offline model registry and license/hash template.
 - configs/runtime_matrix.yaml: runtime acceptance matrix.
+- configs/deployment_topology.yaml: host roles, eviction authorization,
+  current timestamped GPU-free state, and deployment preflight requirements.
 - configs/orchestrator_state_machine.yaml: deterministic stage/state contract.
 - configs/postgres_schema.sql: baseline relational schema for transcript, evidence, reports, and validations.
 - json_schemas/*.schema.json: evidence, report section, and validation result schemas.

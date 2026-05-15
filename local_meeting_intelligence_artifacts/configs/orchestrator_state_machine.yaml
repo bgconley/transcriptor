@@ -8,8 +8,16 @@ global_invariants:
   - every_model_output_is_schema_validated_before_persistence
   - unknown_speaker_org_never_defaults_to_customer
   - final_claims_must_have_evidence_or_not_stated_label
+  - deployment_preflight_runs_before_any_model_stage
+  - gpu_eviction_preserves_non_model_services
 
 states:
+  - name: deployment_preflight
+    inputs: [configs/deployment_topology.yaml, configs/model_registry.yaml, configs/runtime_matrix.yaml]
+    outputs: [deployment_preflight_report.json]
+    success_gate: ssh_gpu_storage_ports_and_model_registry_verified
+    failure_action: stop
+
   - name: ingest
     inputs: [audio_file, meeting_metadata, participant_hints, known_terms, permission_flag]
     outputs: [meeting.json, participants.json, known_terms.json, recording_hash]

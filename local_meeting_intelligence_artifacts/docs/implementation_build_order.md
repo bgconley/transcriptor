@@ -54,7 +54,26 @@ Acceptance:
 - unreviewed licenses block production mode
 - offline mode starts without network download
 
-## Slice 4: Extractors
+## Slice 4: Deployment Preflight and Runtime Probe
+
+Inputs:
+- `configs/deployment_topology.yaml`
+- `configs/model_registry.yaml`
+- `configs/runtime_matrix.yaml`
+
+Outputs:
+- `deployment_preflight_report.json`
+- `runtime_probe_results.json`
+- updated runtime matrix
+
+Acceptance:
+- both hosts are reachable
+- unexpected GPU-resident model workloads are rejected or evicted under the
+  authorized policy
+- non-model services are preserved
+- required ports, ZFS storage, and expected model IDs are verified
+
+## Slice 5: Extractors
 
 Inputs:
 - canonical transcript chunks
@@ -70,7 +89,7 @@ Acceptance:
 - quote match rate is measured
 - schema repair retries are logged
 
-## Slice 5: Missed-Detail and Merge
+## Slice 6: Missed-Detail and Merge
 
 Inputs:
 - transcript chunks
@@ -86,7 +105,7 @@ Acceptance:
 - contradictions become ambiguity records
 - scanner recall lift is measured against gold
 
-## Slice 6: Retrieval
+## Slice 7: Retrieval
 
 Inputs:
 - canonical transcript
@@ -101,7 +120,7 @@ Acceptance:
 - seeded queries retrieve expected evidence
 - reranker improves or is disabled with evidence
 
-## Slice 7: Builder and Validator
+## Slice 8: Builder and Validator
 
 Inputs:
 - report contract
@@ -118,7 +137,7 @@ Acceptance:
 - all validation results include claim audit and coverage
 - critical findings block final assembly
 
-## Slice 8: Final Assembly
+## Slice 9: Final Assembly
 
 Inputs:
 - validated sections

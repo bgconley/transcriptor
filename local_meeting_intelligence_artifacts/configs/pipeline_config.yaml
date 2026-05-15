@@ -2,23 +2,29 @@ version: 0.2
 purpose: local_private_meeting_intelligence
 
 hardware:
-  gpu_0:
-    role: builder_96gb
-    expected_class: RTX_PRO_6000_Blackwell
-    memory_gb: 96
-    cuda_visible_devices: "0"
-  gpu_1:
-    role: extractor_4000
-    expected_class: RTX_PRO_4000_Blackwell_or_RTX_4000_Ada
-    memory_gb_if_blackwell: 24
-    memory_gb_if_ada: 20
-    cuda_visible_devices: "1"
-  gpu_2:
-    role: validator_4000
-    expected_class: RTX_PRO_4000_Blackwell_or_RTX_4000_Ada
-    memory_gb_if_blackwell: 24
-    memory_gb_if_ada: 20
-    cuda_visible_devices: "2"
+  topology: two_host_private_lan
+  deployment_topology: configs/deployment_topology.yaml
+  gpu_node_4000_pair:
+    host: 10.25.0.50
+    hostname: 620-01
+    roles: [control_plane, asr_diarization, extractor, validator, storage]
+    gpus:
+      gpu_0:
+        expected_class: RTX_PRO_4000_Blackwell
+        memory_mib: 24467
+        cuda_visible_devices: "0"
+      gpu_1:
+        expected_class: RTX_PRO_4000_Blackwell
+        memory_mib: 24467
+        cuda_visible_devices: "1"
+  builder_96gb:
+    host: 10.25.0.51
+    hostname: blackbird
+    roles: [large_context_builder, final_section_synthesis]
+    gpu_0:
+      expected_class: RTX_PRO_6000_Blackwell_Max_Q
+      memory_mib: 97887
+      cuda_visible_devices: "0"
 
 runtime_policy:
   internet_egress: disabled_after_model_download
@@ -26,6 +32,9 @@ runtime_policy:
   hash_model_files: true
   pin_cuda_driver_framework_versions: true
   require_private_network_for_model_services: true
+  gpu_model_eviction_authorized: true
+  preserve_non_model_services_during_eviction: true
+  require_deployment_preflight_report: true
   require_schema_validation_before_persistence: true
   require_human_review_for_low_confidence_ownership: true
   reject_unknown_speaker_org_for_final_owner_claims: true
@@ -140,6 +149,7 @@ schemas:
 artifact_paths:
   model_registry_template: configs/model_registry.template.yaml
   runtime_matrix: configs/runtime_matrix.yaml
+  deployment_topology: configs/deployment_topology.yaml
   orchestration_state_machine: configs/orchestrator_state_machine.yaml
   storage_schema: configs/postgres_schema.sql
   implementation_backlog: tasks/implementation_backlog.yaml
@@ -148,6 +158,7 @@ artifact_paths:
   validation_script: scripts/validate_pack.py
   report_contract: docs/report_contract.md
   production_readiness: docs/production_readiness.md
+  deployment_environment: docs/deployment_environment.md
   testing_strategy: docs/testing_strategy.md
   agentic_coder_review_checklist: docs/agentic_coder_review_checklist.md
   handoff_readiness_assessment: docs/handoff_readiness_assessment.md

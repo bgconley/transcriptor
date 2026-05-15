@@ -12,10 +12,21 @@ Production posture:
 - Every stage output must validate against a named schema before it is persisted or used by a downstream model.
 - Unknown speaker ownership must remain unknown until corrected by transcript evidence or human review.
 - Model recommendations are candidates until they pass the local runtime, schema, recall, grounding, and license gates.
+- Deployment targets two hosts: `10.25.0.50` for control/extraction/validation/
+  ASR/storage and `10.25.0.51` for 96GB builder synthesis.
+- GPU model eviction is authorized for this workflow, but non-model app and data
+  services must be preserved unless explicitly authorized.
 
 ## 2. Hardware Role Mapping
 
+See `configs/deployment_topology.yaml` and `docs/deployment_environment.md` for
+the host-level contract. The roles below are logical roles; they are not three
+local GPUs in one workstation.
+
 ### 96GB GPU — Critical Thinker / Analysis Builder
+
+Deployment host:
+- `10.25.0.51` / `blackbird`
 
 Primary purpose:
 - deep architectural synthesis
@@ -35,6 +46,9 @@ Why:
 - It should not be asked to process the raw transcript in one giant pass as the main source of truth.
 
 ### 4000 GPU A — Comprehensive Fact Extractor
+
+Deployment host:
+- `10.25.0.50` / `620-01`
 
 Primary purpose:
 - run domain-specific extraction passes over transcript chunks
@@ -56,6 +70,9 @@ Why:
 - Domain-specific prompts improve recall more than a single broad prompt.
 
 ### 4000 GPU B — Independent Validator / Critic
+
+Deployment host:
+- `10.25.0.50` / `620-01`
 
 Primary purpose:
 - validate extracted evidence
@@ -90,6 +107,25 @@ Use TP-2 only when:
 Do not use TP-2 merely because it is available. The pipeline benefits more from parallel extraction + validation than from a marginally larger single worker model unless benchmarks prove otherwise.
 
 ## 3. Pipeline
+
+### Stage -1 — Deployment Preflight
+
+Inputs:
+- `configs/deployment_topology.yaml`
+- `configs/model_registry.yaml`
+- `configs/runtime_matrix.yaml`
+
+Outputs:
+- deployment_preflight_report.json
+
+Quality gates:
+- both hosts reachable by SSH
+- target GPUs free or occupied only by evictable model containers
+- model-container restart policies inspected and hardened to `no` before stop
+- `nvidia-smi` records memory, utilization, and compute processes
+- expected `/v1/models` endpoints return the expected model IDs
+- ZFS `tank` is mounted on `10.25.0.50`
+- required ports are free or intentionally reused
 
 ### Stage 0 — Ingest
 

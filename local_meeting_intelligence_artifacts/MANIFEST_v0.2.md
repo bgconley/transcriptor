@@ -10,12 +10,14 @@ meeting intelligence pack.
 - `docs/architecture_plan.md`: end-to-end pipeline architecture and production amendments.
 - `docs/report_contract.md`: required 19-section final report contract.
 - `docs/production_readiness.md`: readiness gates and remaining blockers.
+- `docs/deployment_environment.md`: two-host deployment posture, eviction policy, ports, and preflight.
 - `docs/implementation_build_order.md`: recommended engineering sequence.
 - `docs/testing_strategy.md`: required test coverage and negative cases.
 - `docs/agentic_coder_review_checklist.md`: per-slice review checklist.
 - `docs/handoff_readiness_assessment.md`: direct handoff status, first actions, and production blockers.
 - `tasks/implementation_backlog.yaml`: ordered agentic implementation slices and acceptance commands.
 - `configs/pipeline_config.yaml`: active pipeline config and schema map.
+- `configs/deployment_topology.yaml`: host roles, GPU eviction policy, and deployment preflight contract.
 - `configs/orchestrator_state_machine.yaml`: deterministic stage contract.
 - `json_schemas/*.schema.json`: machine-readable output contracts.
 - `prompts/*.txt`: model-stage prompts aligned to the schemas.
@@ -42,7 +44,7 @@ meeting intelligence pack.
 ## Do Not Treat As Production-Ready Until
 
 - every model has a pinned revision and SHA256 manifest
-- runtime matrix is filled from the target workstation
+- runtime matrix is filled from the target two-host GPU environment
 - no-egress proof is captured
 - the schema harness validates all stage outputs
 - the golden set passes the production gates

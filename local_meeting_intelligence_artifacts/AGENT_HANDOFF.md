@@ -7,9 +7,11 @@ pack. Treat this directory as the product/spec input, not as generated notes.
 
 1. Read `MANIFEST_v0.2.md`.
 2. Read `docs/production_readiness.md`.
-3. Read `tasks/implementation_backlog.yaml`.
-4. Run `python scripts/validate_pack.py` from this directory.
-5. Implement the backlog in order unless the user explicitly reorders it.
+3. Read `docs/deployment_environment.md`.
+4. Read `configs/deployment_topology.yaml`.
+5. Read `tasks/implementation_backlog.yaml`.
+6. Run `python scripts/validate_pack.py` from this directory.
+7. Implement the backlog in order unless the user explicitly reorders it.
 
 ## Environment Bootstrap
 
@@ -35,6 +37,9 @@ The implementation project can later replace this bootstrap with its own
 - Do not treat model-card context length as usable local context.
 - Do not treat the workbook as the implementation source of truth; it is a
   v0.1 planning artifact.
+- GPU model eviction is authorized for this workflow, but only for model/runtime
+  containers occupying GPU memory. Preserve app stacks and data services unless
+  the owner explicitly authorizes broader shutdown.
 
 ## Expected Implementation Shape
 
@@ -74,6 +79,14 @@ The pack already includes `scripts/validate_pack.py` as a reference check. A
 real implementation can use it directly or replace it with a packaged CLI, but
 it must preserve the same gates.
 
+## Deployment Preflight
+
+Before any model benchmark or end-to-end workflow run, write a
+`deployment_preflight_report.json` that verifies both hosts from
+`configs/deployment_topology.yaml`: SSH reachability, Docker model-container
+state, restart policies, `nvidia-smi`, expected `/v1/models` responses, free
+ports, and ZFS `tank` availability on `10.25.0.50`.
+
 ## Acceptance Evidence Format
 
 Each completed slice should produce:
@@ -93,7 +106,7 @@ the current run.
 Stop and ask for owner input if:
 
 - model licenses are not acceptable for the intended use
-- the target workstation cannot fit a recommended model at required context
+- the target two-host environment cannot fit a recommended model at required context
 - pyannote access cannot be staged offline
 - ASR/diarization quality cannot meet speaker ownership gates
 - a final report requires unsupported product capabilities to sound complete

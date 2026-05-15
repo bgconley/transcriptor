@@ -11,7 +11,7 @@ Evidence:
 
 Interpretation:
 - This card should be reserved for the largest local synthesis model.
-- It is the only card in the proposed workstation that can plausibly host 100B-class quantized models with useful context.
+- It is the only card in the proposed two-host deployment that can plausibly host 100B-class quantized models with useful context.
 
 ### NVIDIA RTX PRO 4000 Blackwell
 Evidence:
@@ -323,5 +323,5 @@ environment, record the authorized alternate namespace in the model registry.
 The RTX PRO 6000 Blackwell 96GB and RTX PRO 4000 Blackwell 24GB facts support
 the proposed role split. They do not prove that Mistral Medium 3.5 128B,
 Mistral Small 4 119B NVFP4, Qwen3.6 27B, or Gemma 4 31B NVFP4 will meet the
-target context and latency on the exact workstation. The runtime matrix is the
+target context and latency on the exact two-host GPU environment. The runtime matrix is the
 source of truth after benchmarking.
