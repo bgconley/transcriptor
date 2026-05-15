@@ -30,6 +30,9 @@ Production hardening decisions added in v0.2:
 - Deployment is a two-host topology, not one three-GPU box. GPU model eviction
   is authorized, but non-model app/data services must be preserved unless
   explicitly authorized.
+- Model fit, serving framework, kernel path, context, and unload cleanup are the
+  first implementation gate. Do not build normal pipeline stages before
+  `LMI-000` has promoted or rejected the candidate model/runtime pairs.
 
 Included artifacts:
 - MANIFEST_v0.2.md: source-of-truth map and template/readiness status.
@@ -44,6 +47,8 @@ Included artifacts:
 - docs/production_readiness.md: build order, gates, and remaining production blockers.
 - docs/deployment_environment.md: two-host deployment posture, eviction policy,
   ports, and required preflight.
+- docs/model_fit_kernel_stress_plan.md: first-gate model/runtime/kernel fit
+  proof plan.
 - docs/testing_strategy.md: required unit, boundary, integration, and end-to-end tests.
 - docs/agentic_coder_review_checklist.md: per-slice review checklist.
 - docs/handoff_readiness_assessment.md: direct implementation-handoff status
@@ -55,6 +60,8 @@ Included artifacts:
 - configs/runtime_matrix.yaml: runtime acceptance matrix.
 - configs/deployment_topology.yaml: host roles, eviction authorization,
   current timestamped GPU-free state, and deployment preflight requirements.
+- configs/model_fit_matrix.yaml: candidate model/runtime/context/kernel stress
+  matrix that must be run before normal implementation.
 - configs/orchestrator_state_machine.yaml: deterministic stage/state contract.
 - configs/postgres_schema.sql: baseline relational schema for transcript, evidence, reports, and validations.
 - json_schemas/*.schema.json: evidence, report section, and validation result schemas.

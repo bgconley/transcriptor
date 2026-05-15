@@ -1,13 +1,57 @@
-version: 0.3
+version: 0.4
 purpose: agentic_implementation_backlog
 
 execution_rules:
   implement_in_order: true
+  model_fit_kernel_stress_first: true
   acceptance_commands_required: true
   update_runtime_matrix_with_measured_facts: true
   preserve_pack_contracts_unless_user_approves_change: true
 
 slices:
+  - id: LMI-000
+    title: Model fit, serving framework, and kernel stress gate
+    priority: p0_blocker
+    owner_scope:
+      - docs/model_fit_kernel_stress_plan.md
+      - configs/model_fit_matrix.yaml
+      - configs/deployment_topology.yaml
+      - configs/model_registry.yaml
+      - configs/runtime_matrix.yaml
+      - src/model_fit/
+      - src/deployment_preflight/
+      - tests/test_model_fit*
+      - tests/test_deployment_preflight*
+    inputs:
+      - configs/model_fit_matrix.yaml
+      - configs/deployment_topology.yaml
+      - configs/model_registry.yaml
+      - local_model_files
+      - target_gpu_inventory
+    outputs:
+      - deployment_preflight_report.json
+      - model_fit_results.json
+      - kernel_path_log_review.md
+      - runtime_matrix_patch.yaml
+      - model_registry_status_patch.yaml
+      - rejected_candidates.json
+    implementation_notes:
+      - This gate runs before normal pipeline implementation.
+      - Only pack validation and minimal model-fit/preflight runner scaffolding may precede this gate.
+      - Parse startup logs for quantization, attention, MoE, KV cache, CUDA graph, and fallback warnings.
+      - Reject unintended Marlin, CPU/offload, architecture-error, or repeated kernel-error paths.
+      - Do not mark any model approved from model-card evidence alone.
+    acceptance_commands:
+      - python scripts/validate_pack.py
+      - pytest tests/test_model_fit_matrix.py tests/test_deployment_preflight.py tests/test_model_fit_runner.py
+      - python -m local_meeting_intelligence.model_fit --matrix configs/model_fit_matrix.yaml --topology configs/deployment_topology.yaml --out runs/manual/model_fit_results.json
+    pass_criteria:
+      - all_candidate_runs_have_fit_or_rejection_records
+      - kernel_paths_are_recorded_from_logs
+      - runtime_matrix_patch_is_generated_from_measurements
+      - model_registry_status_patch_does_not_promote_unproven_models
+      - gpu_unload_cleanup_verified_after_each_profile
+
   - id: LMI-001
     title: Schema harness and fixture validation
     priority: p0

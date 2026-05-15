@@ -21,6 +21,9 @@ target two-host GPU environment.
   captured.
 - The deployment topology is explicit for `10.25.0.50` and `10.25.0.51`,
   including authorized GPU model eviction and required preflight checks.
+- The first implementation task is now model fit/kernel stress (`LMI-000`), so
+  candidate model/runtime assumptions must be proven before pipeline stages are
+  built.
 
 ## First Agent Actions
 
@@ -61,6 +64,8 @@ An implementation agent must not:
 
 - Exact model revisions, licenses, local paths, and SHA256 hashes must be
   pinned in a real `configs/model_registry.yaml`.
+- `configs/model_fit_matrix.yaml` must be executed and each candidate must be
+  promoted or rejected from measured fit/kernel/context/stability evidence.
 - Runtime matrix values must be measured on the target two-host GPU environment, including
   context length, KV-cache behavior, peak VRAM, latency, failure modes, driver
   version, CUDA version, and inference runtime version.

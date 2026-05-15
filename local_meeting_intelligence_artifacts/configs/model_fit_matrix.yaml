@@ -1,0 +1,176 @@
+version: 0.1
+purpose: first_gate_model_fit_serving_framework_kernel_stress_matrix
+
+execution_policy:
+  must_run_before_pipeline_implementation: true
+  allowed_before_this_gate:
+    - pack_validation
+    - minimal_model_fit_runner_scaffold
+    - deployment_preflight_runner_scaffold
+  disallowed_before_this_gate:
+    - production_pipeline_stage_implementation
+    - final_model_approval
+    - golden_set_claims_about_quality
+  promote_model_only_after_all_required_checks_pass: true
+  update_model_registry_with_measured_status: true
+  update_runtime_matrix_with_measured_facts: true
+
+source_backing:
+  reviewed_utc: "2026-05-15T06:00:00Z"
+  notes:
+    - vLLM Blackwell deployments require CUDA 12.8+ compatible binaries or containers.
+    - vLLM detects ModelOpt FP4/NVFP4 checkpoints as `modelopt_fp4`; current docs describe the NVFP4 checkpoint format as experimental.
+    - vLLM can fall back to Marlin for FP4 on devices without native FP4 support; stress logs must reject unintended fallback paths.
+    - TensorRT-LLM NVFP4 KV cache requires offline ModelOpt quantization and currently requires FP8 weight/activation quantization for that NVFP4 KV-cache path.
+  primary_sources:
+    - https://docs.vllm.ai/en/latest/getting_started/installation/gpu/
+    - https://docs.vllm.ai/en/latest/api/vllm/model_executor/layers/quantization/modelopt/
+    - https://docs.vllm.ai/en/latest/api/vllm/model_executor/kernels/linear/nvfp4/marlin/
+    - https://github.com/NVIDIA/TensorRT-LLM/blob/main/docs/source/features/quantization.md
+
+global_required_checks:
+  preflight:
+    - host_reachable
+    - gpu_inventory_matches_deployment_topology
+    - target_gpu_free_or_evicted_under_policy
+    - required_ports_free_or_intentionally_reused
+    - zfs_tank_available_on_10_25_0_50
+  fit:
+    - cold_load_succeeds
+    - warm_reload_succeeds
+    - target_context_succeeds
+    - peak_vram_recorded
+    - kv_cache_capacity_recorded
+    - max_num_seqs_recorded
+  kernel:
+    - selected_attention_backend_recorded
+    - selected_linear_or_moe_backend_recorded
+    - quantization_method_recorded
+    - no_unintended_marlin_or_cpu_fallback
+    - no_repeated_kernel_errors
+  serving:
+    - v1_models_reports_expected_id
+    - health_or_chat_smoke_succeeds
+    - structured_json_smoke_succeeds_for_schema_roles
+    - forced_tool_call_smoke_only_if_role_requires_tool_parser
+  stress:
+    - ten_repeated_requests_succeed
+    - thirty_minute_soak_succeeds_for_candidate_promotion
+    - unload_releases_gpu_memory
+    - restart_policy_remains_no_for_test_containers
+  quality_smoke:
+    - valid_json_rate_recorded
+    - quote_match_rate_recorded_for_extractor_roles
+    - seeded_bad_claim_detection_recorded_for_validator_roles
+    - omission_rate_recorded_for_builder_roles
+
+reject_candidate_if:
+  - model_requires_runtime_download_in_offline_mode
+  - model_reports_different_id_than_expected
+  - target_context_fails_repeatedly
+  - observed_kernel_path_differs_from_required_path
+  - vram_headroom_below_2_gib_after_load
+  - json_schema_valid_rate_below_role_threshold
+  - unknown_speaker_is_promoted_to_customer
+  - unload_leaves_gpu_compute_process_or_high_utilization_zombie
+
+test_profiles:
+  - profile_id: builder_fallback_mistral_small_4_119b_nvfp4_fit
+    role: builder_fallback
+    host: 10.25.0.51
+    gpu_count: 1
+    model_registry_id: builder_fallback_mistral_small_4_119b_nvfp4
+    candidate_runtimes: [vllm, sglang, tensorrt_llm_or_nim_if_needed]
+    quantization_under_test: vendor_nvfp4_checkpoint
+    context_sweep_tokens: [32768, 65536, 98304, 131072]
+    required_kernel_evidence:
+      - modelopt_fp4_or_runtime_specific_nvfp4_path_logged
+      - moe_backend_logged
+      - attention_backend_logged
+      - no_unintended_marlin_fallback
+    promotion_thresholds:
+      minimum_context_tokens: 65536
+      minimum_vram_headroom_gib: 2
+      builder_omission_rate_max: 0.12
+      section_json_valid_rate_min: 0.98
+
+  - profile_id: builder_primary_mistral_medium_3_5_128b_fit
+    role: builder_primary
+    host: 10.25.0.51
+    gpu_count: 1
+    model_registry_id: builder_primary_mistral_medium_3_5_128b
+    candidate_runtimes: [vllm, sglang, llama_cpp_gguf]
+    quantization_under_test: pinned_quantization_required
+    context_sweep_tokens: [32768, 65536, 98304]
+    required_kernel_evidence:
+      - quantization_backend_or_gguf_loader_logged
+      - attention_backend_logged
+      - no_cpu_offload_unless_explicitly_approved
+    promotion_thresholds:
+      minimum_context_tokens: 65536
+      minimum_vram_headroom_gib: 2
+      builder_omission_rate_max: 0.10
+      section_json_valid_rate_min: 0.98
+
+  - profile_id: extractor_qwen3_6_27b_fit
+    role: extractor_primary
+    host: 10.25.0.50
+    gpu_count: 1
+    model_registry_id: extractor_primary_qwen3_6_27b
+    candidate_runtimes: [vllm, sglang, llama_cpp_gguf]
+    quantization_under_test: pinned_quantization_required
+    context_sweep_tokens: [8192, 16384, 32768, 65536]
+    required_kernel_evidence:
+      - quantization_backend_logged
+      - attention_backend_logged
+      - no_runtime_architecture_error
+    promotion_thresholds:
+      minimum_context_tokens: 16384
+      minimum_vram_headroom_gib: 1.5
+      chunk_json_valid_rate_min: 0.98
+      quote_match_rate_min: 0.95
+      unknown_speaker_misclassification_rate_max: 0.0
+
+  - profile_id: validator_gemma_4_31b_nvfp4_fit
+    role: validator_primary
+    host: 10.25.0.50
+    gpu_count: 1
+    model_registry_id: validator_primary_gemma_4_31b_nvfp4
+    candidate_runtimes: [vllm, sglang]
+    quantization_under_test: vendor_nvfp4_checkpoint
+    context_sweep_tokens: [8192, 16384, 32768]
+    required_kernel_evidence:
+      - modelopt_fp4_or_runtime_specific_nvfp4_path_logged
+      - attention_backend_logged
+      - no_unintended_marlin_fallback
+    promotion_thresholds:
+      minimum_context_tokens: 16384
+      minimum_vram_headroom_gib: 1.5
+      seeded_bad_claim_detection_min: 0.95
+      false_approval_rate_max: 0.02
+
+  - profile_id: validator_gemma_4_26b_a4b_fallback_fit
+    role: validator_fallback
+    host: 10.25.0.50
+    gpu_count: 1
+    model_registry_id: validator_fallback_gemma_4_26b_a4b
+    candidate_runtimes: [vllm, sglang, llama_cpp_gguf]
+    quantization_under_test: pinned_quantization_required
+    context_sweep_tokens: [8192, 16384, 32768]
+    required_kernel_evidence:
+      - quantization_backend_logged
+      - attention_backend_logged
+      - no_runtime_architecture_error
+    promotion_thresholds:
+      minimum_context_tokens: 16384
+      minimum_vram_headroom_gib: 1.5
+      seeded_bad_claim_detection_min: 0.93
+      false_approval_rate_max: 0.03
+
+outputs_required:
+  - deployment_preflight_report.json
+  - model_fit_results.json
+  - kernel_path_log_review.md
+  - runtime_matrix_patch.yaml
+  - model_registry_status_patch.yaml
+  - rejected_candidates.json

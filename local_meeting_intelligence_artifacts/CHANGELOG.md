@@ -10,6 +10,7 @@ Added:
 - validation bootstrap dependencies
 - handoff readiness assessment
 - two-host deployment topology and environment notes
+- first-gate model fit, serving framework, and kernel stress plan plus machine-readable matrix
 - wrapper schemas for chunk extraction, missed-detail scanning, evidence merge, claim maps, and canonical transcript segments
 - required coverage and claim-audit fields in validation results
 - stricter report-section schema with integrity notes and required subsection coverage
@@ -32,6 +33,7 @@ Changed:
 - architecture plan now distinguishes candidate model-card evidence from local runtime proof
 - pipeline config now models `10.25.0.50` and `10.25.0.51` as separate hosts
 - orchestrator state machine now starts with deployment preflight
+- implementation backlog now starts with `LMI-000` model fit/kernel stress before normal pipeline work
 - GPU model eviction is recorded as authorized while preserving non-model services
 
 Not changed:

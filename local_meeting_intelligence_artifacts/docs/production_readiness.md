@@ -15,6 +15,14 @@ two-host GPU environment.
 
 ## Must-Pass Gates
 
+0. Model Fit and Kernel Stress
+   - Run `docs/model_fit_kernel_stress_plan.md` and
+     `configs/model_fit_matrix.yaml` before normal pipeline implementation.
+   - Prove or reject each candidate model/runtime pair on the target host.
+   - Record kernel path, quantization backend, attention backend, MoE backend,
+     KV-cache capacity, context, peak VRAM, structured-output quality, and
+     unload cleanup.
+
 1. Hardware Inventory
    - Confirm exact GPU names, VRAM, PCIe topology, driver, CUDA, and container
      runtime.
@@ -77,6 +85,7 @@ two-host GPU environment.
 
 ## Recommended Implementation Order
 
+0. Run model fit, serving framework, and kernel stress gate.
 1. Implement schema validation utilities.
 2. Implement canonical transcript JSONL and segment hashing.
 3. Build the model registry loader and hash verifier.
@@ -92,6 +101,8 @@ two-host GPU environment.
 
 - 100B-class quantized builder quality on one 96GB card is unproven.
 - 31B NVFP4 validator fit on a single 20/24GB 4000 is unproven.
+- NVFP4/FP4 kernel path selection is unproven for the exact candidate models,
+  checkpoints, containers, and SM120 hosts.
 - Qwen3.6 27B structured JSON reliability must be tested with thinking output
   disabled or stripped before validation.
 - pyannote Community-1 has access/terms requirements and should be staged

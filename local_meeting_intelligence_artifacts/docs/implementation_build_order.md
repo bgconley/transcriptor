@@ -4,6 +4,30 @@ This is the suggested engineering sequence for turning the pack into a working
 system. Each slice should produce a runnable artifact and a small benchmark or
 fixture before moving on.
 
+## Slice 0: Model Fit, Serving Framework, and Kernel Stress
+
+Inputs:
+- `configs/model_fit_matrix.yaml`
+- `configs/deployment_topology.yaml`
+- `configs/model_registry.yaml`
+- local model files
+- target GPU inventory
+
+Outputs:
+- `deployment_preflight_report.json`
+- `model_fit_results.json`
+- `kernel_path_log_review.md`
+- `runtime_matrix_patch.yaml`
+- `model_registry_status_patch.yaml`
+- `rejected_candidates.json`
+
+Acceptance:
+- every candidate profile has a measured approval or rejection
+- kernel paths are recorded from logs
+- target context and KV cache capacity are measured, not assumed
+- unload cleanup returns GPUs to idle
+- no normal pipeline stage starts before this gate is complete
+
 ## Slice 1: Validation Harness
 
 Inputs:

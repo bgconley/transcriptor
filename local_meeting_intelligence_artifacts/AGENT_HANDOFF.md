@@ -9,9 +9,11 @@ pack. Treat this directory as the product/spec input, not as generated notes.
 2. Read `docs/production_readiness.md`.
 3. Read `docs/deployment_environment.md`.
 4. Read `configs/deployment_topology.yaml`.
-5. Read `tasks/implementation_backlog.yaml`.
-6. Run `python scripts/validate_pack.py` from this directory.
-7. Implement the backlog in order unless the user explicitly reorders it.
+5. Read `docs/model_fit_kernel_stress_plan.md`.
+6. Read `configs/model_fit_matrix.yaml`.
+7. Read `tasks/implementation_backlog.yaml`.
+8. Run `python scripts/validate_pack.py` from this directory.
+9. Implement the backlog in order unless the user explicitly reorders it.
 
 ## Environment Bootstrap
 
@@ -40,6 +42,9 @@ The implementation project can later replace this bootstrap with its own
 - GPU model eviction is authorized for this workflow, but only for model/runtime
   containers occupying GPU memory. Preserve app stacks and data services unless
   the owner explicitly authorizes broader shutdown.
+- Do not implement normal pipeline stages before `LMI-000` proves or rejects
+  model fit, serving framework, kernel path, context, and unload behavior on the
+  target hosts.
 
 ## Expected Implementation Shape
 
@@ -64,6 +69,17 @@ Keep modules small enough that each can be tested independently. The schemas in
 `json_schemas/` are the API between stages.
 
 ## First Implementation Slice
+
+Run `LMI-000` first. This is the model fit, serving framework, and kernel stress
+gate. It must prove or reject the candidate model/runtime pairs in
+`configs/model_fit_matrix.yaml` before extraction, reporting, or final assembly
+implementation begins.
+
+Only after `LMI-000` has produced `model_fit_results.json`,
+`kernel_path_log_review.md`, and model-registry/runtime-matrix status patches
+should the implementation move to the schema harness.
+
+## First Coding Slice
 
 Build the schema harness first. It should:
 

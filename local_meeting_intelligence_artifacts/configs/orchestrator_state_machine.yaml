@@ -9,9 +9,17 @@ global_invariants:
   - unknown_speaker_org_never_defaults_to_customer
   - final_claims_must_have_evidence_or_not_stated_label
   - deployment_preflight_runs_before_any_model_stage
+  - model_fit_kernel_stress_passes_before_pipeline_implementation
   - gpu_eviction_preserves_non_model_services
 
 states:
+  - name: model_fit_kernel_stress
+    mode: preproduction_gate
+    inputs: [configs/model_fit_matrix.yaml, configs/deployment_topology.yaml, configs/model_registry.yaml, configs/runtime_matrix.yaml]
+    outputs: [model_fit_results.json, kernel_path_log_review.md, runtime_matrix_patch.yaml, model_registry_status_patch.yaml, rejected_candidates.json]
+    success_gate: every_candidate_has_measured_approval_or_rejection
+    failure_action: stop_before_pipeline_implementation
+
   - name: deployment_preflight
     inputs: [configs/deployment_topology.yaml, configs/model_registry.yaml, configs/runtime_matrix.yaml]
     outputs: [deployment_preflight_report.json]

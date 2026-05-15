@@ -35,11 +35,22 @@ Interpretation:
 Evidence:
 - vLLM documentation states that Blackwell GPUs require CUDA 12.8+ and that vLLM binaries are CUDA-version specific.
 - Source: https://docs.vllm.ai/en/stable/getting_started/installation/gpu/
+- vLLM's ModelOpt FP4/NVFP4 path uses `modelopt_fp4`; current docs describe
+  ModelOpt NVFP4 checkpoint format as experimental.
+- Source: https://docs.vllm.ai/en/latest/api/vllm/model_executor/layers/quantization/modelopt/
+- vLLM documents an NVFP4 Marlin kernel path that can be used when native FP4
+  computation is unavailable; unintended fallback must be caught in logs.
+- Source: https://docs.vllm.ai/en/latest/api/vllm/model_executor/kernels/linear/nvfp4/marlin/
+- TensorRT-LLM documents NVFP4 KV cache through offline ModelOpt quantization
+  and requires FP8 weight/activation quantization for that NVFP4 KV-cache flow.
+- Source: https://github.com/NVIDIA/TensorRT-LLM/blob/main/docs/source/features/quantization.md
 
 Interpretation:
 - Runtime pinning is a first-class requirement.
 - Do not mix arbitrary PyTorch/CUDA/vLLM versions.
 - Treat vLLM/SGLang/llama.cpp as separately benchmarked runtime tracks.
+- NVFP4/FP4 candidates require log-proven kernel-path acceptance before any
+  model can be approved.
 
 ## 96GB Builder Candidates
 

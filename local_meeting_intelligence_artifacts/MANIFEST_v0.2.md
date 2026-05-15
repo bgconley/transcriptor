@@ -11,6 +11,7 @@ meeting intelligence pack.
 - `docs/report_contract.md`: required 19-section final report contract.
 - `docs/production_readiness.md`: readiness gates and remaining blockers.
 - `docs/deployment_environment.md`: two-host deployment posture, eviction policy, ports, and preflight.
+- `docs/model_fit_kernel_stress_plan.md`: first-gate model/runtime/kernel fit proof plan.
 - `docs/implementation_build_order.md`: recommended engineering sequence.
 - `docs/testing_strategy.md`: required test coverage and negative cases.
 - `docs/agentic_coder_review_checklist.md`: per-slice review checklist.
@@ -18,6 +19,7 @@ meeting intelligence pack.
 - `tasks/implementation_backlog.yaml`: ordered agentic implementation slices and acceptance commands.
 - `configs/pipeline_config.yaml`: active pipeline config and schema map.
 - `configs/deployment_topology.yaml`: host roles, GPU eviction policy, and deployment preflight contract.
+- `configs/model_fit_matrix.yaml`: candidate model/runtime/context/kernel stress matrix that must run before normal pipeline implementation.
 - `configs/orchestrator_state_machine.yaml`: deterministic stage contract.
 - `json_schemas/*.schema.json`: machine-readable output contracts.
 - `prompts/*.txt`: model-stage prompts aligned to the schemas.

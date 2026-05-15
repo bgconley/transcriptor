@@ -62,6 +62,32 @@ models:
     sha256_manifest: manifests/validator_primary_gemma_4_31b_nvfp4.sha256
     production_status: candidate
 
+  - registry_id: validator_fallback_gemma_4_26b_a4b
+    role: validator_fallback
+    source: https://huggingface.co/google/gemma-4-26B-A4B
+    model_id: google/gemma-4-26B-A4B
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/gemma-4-26b-a4b-quant
+    quantization: PIN_QUANTIZATION_FORMAT_AND_SOURCE
+    license: Gemma terms / model-card governing terms
+    license_status: review_required
+    expected_runtime: vllm_or_sglang_or_llama_cpp_after_benchmark
+    sha256_manifest: manifests/validator_fallback_gemma_4_26b_a4b.sha256
+    production_status: candidate
+
+  - registry_id: validator_safe_fallback_mistral_small_3_2_24b
+    role: validator_safe_fallback
+    source: https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506
+    model_id: mistralai/Mistral-Small-3.2-24B-Instruct-2506
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/mistral-small-3.2-24b-instruct-quant
+    quantization: PIN_QUANTIZATION_FORMAT_AND_SOURCE
+    license: Apache-2.0
+    license_status: review_required
+    expected_runtime: vllm_or_llama_cpp_after_benchmark
+    sha256_manifest: manifests/validator_safe_fallback_mistral_small_3_2_24b.sha256
+    production_status: candidate
+
   - registry_id: diarization_primary_pyannote_community_1
     role: diarization_primary
     source: https://huggingface.co/pyannote/speaker-diarization-community-1

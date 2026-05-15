@@ -213,6 +213,52 @@ def validate_schema_references() -> None:
     print(f"OK pipeline artifact paths: {len(pipeline.get('artifact_paths', {}))}")
 
 
+def validate_implementation_order() -> None:
+    backlog = load_yaml(ROOT / "tasks" / "implementation_backlog.yaml")
+    slices = backlog.get("slices", [])
+    if not slices:
+        print("FAIL implementation backlog has no slices")
+        raise SystemExit(1)
+    first = slices[0]
+    if first.get("id") != "LMI-000":
+        print(f"FAIL first implementation slice must be LMI-000, found {first.get('id')}")
+        raise SystemExit(1)
+    title = str(first.get("title", "")).lower()
+    if "model fit" not in title or "kernel" not in title:
+        print(f"FAIL LMI-000 title must be the model fit/kernel stress gate, found {first.get('title')}")
+        raise SystemExit(1)
+    if not backlog.get("execution_rules", {}).get("model_fit_kernel_stress_first"):
+        print("FAIL backlog execution rule model_fit_kernel_stress_first must be true")
+        raise SystemExit(1)
+    print("OK implementation order: LMI-000 model fit/kernel stress first")
+
+
+def validate_model_fit_matrix() -> None:
+    matrix = load_yaml(ROOT / "configs" / "model_fit_matrix.yaml")
+    profiles = matrix.get("test_profiles", [])
+    if not profiles:
+        print("FAIL model fit matrix has no test profiles")
+        raise SystemExit(1)
+    if profiles[0].get("profile_id") != "builder_fallback_mistral_small_4_119b_nvfp4_fit":
+        print(f"FAIL first model fit profile must test the 96GB NVFP4 builder fallback, found {profiles[0].get('profile_id')}")
+        raise SystemExit(1)
+    registry_template = load_yaml(CONFIG_DIR / "model_registry.template.yaml")
+    registry_ids = {model["registry_id"] for model in registry_template.get("models", [])}
+    missing_registry_ids = []
+    for profile in profiles:
+        registry_id = profile.get("model_registry_id")
+        if registry_id not in registry_ids:
+            missing_registry_ids.append((profile.get("profile_id"), registry_id))
+    if missing_registry_ids:
+        for profile_id, registry_id in missing_registry_ids:
+            print(f"FAIL model fit profile {profile_id} references missing registry id {registry_id}")
+        raise SystemExit(1)
+    if not matrix.get("execution_policy", {}).get("must_run_before_pipeline_implementation"):
+        print("FAIL model fit matrix must_run_before_pipeline_implementation must be true")
+        raise SystemExit(1)
+    print(f"OK model fit matrix profiles: {len(profiles)}")
+
+
 def main() -> int:
     schemas = {path.name: load_json(path) for path in sorted(SCHEMA_DIR.glob("*.json"))}
     for name, schema in schemas.items():
@@ -224,6 +270,8 @@ def main() -> int:
         print(f"OK yaml {path.relative_to(ROOT)}")
 
     validate_schema_references()
+    validate_implementation_order()
+    validate_model_fit_matrix()
     validate_positive_fixtures(schemas)
     validate_negative_cases(schemas)
     print("PACK VALIDATION PASSED")

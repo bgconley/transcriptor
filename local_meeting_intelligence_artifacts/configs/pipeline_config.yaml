@@ -35,6 +35,7 @@ runtime_policy:
   gpu_model_eviction_authorized: true
   preserve_non_model_services_during_eviction: true
   require_deployment_preflight_report: true
+  require_model_fit_kernel_stress_before_pipeline_implementation: true
   require_schema_validation_before_persistence: true
   require_human_review_for_low_confidence_ownership: true
   reject_unknown_speaker_org_for_final_owner_claims: true
@@ -149,6 +150,7 @@ schemas:
 artifact_paths:
   model_registry_template: configs/model_registry.template.yaml
   runtime_matrix: configs/runtime_matrix.yaml
+  model_fit_matrix: configs/model_fit_matrix.yaml
   deployment_topology: configs/deployment_topology.yaml
   orchestration_state_machine: configs/orchestrator_state_machine.yaml
   storage_schema: configs/postgres_schema.sql
@@ -159,6 +161,7 @@ artifact_paths:
   report_contract: docs/report_contract.md
   production_readiness: docs/production_readiness.md
   deployment_environment: docs/deployment_environment.md
+  model_fit_kernel_stress_plan: docs/model_fit_kernel_stress_plan.md
   testing_strategy: docs/testing_strategy.md
   agentic_coder_review_checklist: docs/agentic_coder_review_checklist.md
   handoff_readiness_assessment: docs/handoff_readiness_assessment.md

@@ -20,10 +20,13 @@ while implementing the workflow.
    - Register generation.
 
 3. Boundary tests
+   - Model fit matrix is the first backlog slice and cannot be skipped.
    - Model registry blocks unpinned or unlicensed models in production mode.
    - Runtime probes record measured facts instead of assumed context.
    - Deployment preflight rejects unexpected model residency, mismatched model
      IDs, missing ZFS storage, or occupied required ports.
+   - Kernel stress log parsing rejects unintended Marlin, CPU/offload,
+     unsupported-architecture, and repeated kernel-error paths.
    - Model responses with reasoning traces or malformed JSON are rejected.
    - Unknown speakers are never converted to customer by default.
 
@@ -48,6 +51,8 @@ while implementing the workflow.
 - unknown speaker ownership cannot be promoted to customer without human-review
   correction evidence.
 - final assembly fails when any validation result has a critical finding.
+- a candidate model cannot be promoted without fit, context, kernel, stability,
+  and unload-cleanup evidence.
 
 ## Required Test Commands
 
