@@ -1,0 +1,36 @@
+version: 0.1
+purpose: measured_runtime_matrix_patch_from_run_20260515T055927Z
+
+observed_runtime_facts:
+  - runtime: vllm
+    image: voipmonitor/vllm:cu130
+    version: 0.19.1rc1.dev29+g93726b2a1.d20260404
+    model: sakamakismile/Qwen3.6-27B-NVFP4
+    host: 10.25.0.50
+    gpu_count: 1
+    max_model_len: 18816
+    kv_cache_dtype: fp8
+    nvfp4_backend: VLLM_CUTLASS
+    attention_backend: FLASHINFER
+    required_prompt_control: chat_template_kwargs.enable_thinking=false plus no_think instruction for structured output
+    reject_for_production: true
+
+  - runtime: vllm
+    image: vllm-gemma4-pr40391:cu130
+    version: 0.20.2rc1.dev9+g01d4d1ad3
+    model: nvidia/Gemma-4-26B-A4B-NVFP4
+    host: 10.25.0.50
+    gpu_count: 1
+    max_model_len: 32768
+    kv_cache_dtype: fp8
+    quantization: modelopt_fp4
+    attention_backend: TRITON_ATTN
+    nvfp4_moe_backend: VLLM_CUTLASS
+    launch_caveat: do not combine docker --gpus device=N with inner CUDA_VISIBLE_DEVICES=N; vLLM NVML inspection failed with NVMLError_InvalidArgument
+    reject_for_production: true
+
+required_runtime_matrix_changes:
+  - add explicit no-thinking structured-output controls for Qwen-family extractor tests
+  - add authorization header handling for endpoints launched with --api-key EMPTY
+  - treat exact model identity mismatch as a rejection unless matrix is updated first
+  - reserve at least 1.5GiB headroom; observed single-GPU 24GB NVFP4 fits are too tight at tested contexts

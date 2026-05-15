@@ -52,6 +52,31 @@ Interpretation:
 - NVFP4/FP4 candidates require log-proven kernel-path acceptance before any
   model can be approved.
 
+### Measured Fit Gate 20260515T055927Z
+Evidence:
+- `runs/20260515T055927Z/model_fit_results.json` records the first `LMI-000`
+  live fit gate on `10.25.0.50` and `10.25.0.51`.
+- `10.25.0.51` was reachable and idle, but the Mistral Small 4 119B NVFP4 and
+  Mistral Medium 3.5 128B builder candidates were not staged.
+- `sakamakismile/Qwen3.6-27B-NVFP4` loaded on one RTX PRO 4000 Blackwell with
+  vLLM CUTLASS NVFP4 and FlashInfer attention. Its `/v1/models` max length was
+  `18,816`; 8K and 16K probes passed, while 32K and 65K probes failed.
+- `nvidia/Gemma-4-26B-A4B-NVFP4` loaded on one RTX PRO 4000 Blackwell with
+  `modelopt_fp4`, forced `TRITON_ATTN`, and `VLLM_CUTLASS` NVFP4 MoE. 8K and
+  16K probes passed, while the 32K probe exceeded max context once output tokens
+  were included.
+- Both observed one-card 24GB NVFP4 runs had sub-1GiB free headroom during the
+  sweep and were unloaded cleanly back to 2MiB GPU memory.
+
+Interpretation:
+- No model is promoted from the first fit gate.
+- The 96GB builder plan is blocked on staging exact builder model artifacts.
+- Qwen NVFP4 is technically viable for short extractor chunks only if the
+  registry accepts the observed model identity and no-thinking structured-output
+  controls are enforced.
+- Gemma 26B A4B NVFP4 is technically viable as a short-context validator, but it
+  needs stronger JSON forcing and more headroom before production use.
+
 ## 96GB Builder Candidates
 
 ### Mistral Medium 3.5 128B

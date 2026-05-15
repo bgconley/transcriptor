@@ -1,0 +1,13 @@
+before_stop_utc=2026-05-15T06:11:32Z
+lmi-fit-gemma26-a4b-nvfp4	Up 6 minutes
+lmi-fit-qwen27-nvfp4	Up 8 minutes
+lmi-fit-qwen27-nvfp4
+lmi-fit-gemma26-a4b-nvfp4
+lmi-fit-qwen27-nvfp4
+lmi-fit-gemma26-a4b-nvfp4
+after_stop_utc=2026-05-15T06:11:46Z
+lmi-fit-gemma26-a4b-nvfp4	Exited (0) 10 seconds ago	vllm-gemma4-pr40391:cu130
+lmi-fit-qwen27-nvfp4	Exited (0) 11 seconds ago	voipmonitor/vllm:cu130
+index, name, memory.used [MiB], memory.free [MiB], utilization.gpu [%], pstate, temperature.gpu, power.draw [W]
+0, NVIDIA RTX PRO 4000 Blackwell, 2 MiB, 23988 MiB, 0 %, P8, 41, 5.52 W
+1, NVIDIA RTX PRO 4000 Blackwell, 2 MiB, 23988 MiB, 0 %, P8, 38, 6.05 W

@@ -1,0 +1,46 @@
+{
+  "run_id": "20260515T055927Z",
+  "generated_utc": "2026-05-15T06:14:42Z",
+  "hosts": {
+    "10.25.0.50": {
+      "reachable": true,
+      "gpu_inventory": "2x NVIDIA RTX PRO 4000 Blackwell, 24467 MiB each",
+      "pre_run_gpu_state": "idle at 2 MiB each before test containers; preserved non-model services",
+      "zfs_tank": "ONLINE from preflight; /tank/models available",
+      "ports_used_for_test": [
+        18120,
+        18121
+      ],
+      "post_run_gpu_state": [
+        {
+          "index": "0",
+          "name": "NVIDIA RTX PRO 4000 Blackwell",
+          "memory.used [MiB]": "2 MiB",
+          "memory.free [MiB]": "23988 MiB",
+          "utilization.gpu [%]": "0 %",
+          "pstate": "P8",
+          "temperature.gpu": "41",
+          "power.draw [W]": "5.52 W"
+        },
+        {
+          "index": "1",
+          "name": "NVIDIA RTX PRO 4000 Blackwell",
+          "memory.used [MiB]": "2 MiB",
+          "memory.free [MiB]": "23988 MiB",
+          "utilization.gpu [%]": "0 %",
+          "pstate": "P8",
+          "temperature.gpu": "38",
+          "power.draw [W]": "6.05 W"
+        }
+      ]
+    },
+    "10.25.0.51": {
+      "reachable": true,
+      "gpu_inventory": "1x NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition, 97887 MiB",
+      "pre_run_gpu_state": "idle at 2 MiB; no running containers",
+      "builder_candidate_staging": "missing Mistral Small 4 119B NVFP4 and Mistral Medium 3.5 128B assets"
+    }
+  },
+  "eviction_policy": "honored; only lmi-fit test containers were started/stopped",
+  "result": "passed_with_builder_staging_blocks"
+}

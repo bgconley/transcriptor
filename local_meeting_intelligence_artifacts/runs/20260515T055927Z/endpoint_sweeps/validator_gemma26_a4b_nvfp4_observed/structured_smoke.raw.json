@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "status": 200,
+  "elapsed_sec": 0.18,
+  "body": {
+    "id": "chatcmpl-af218d7e1db20db8",
+    "object": "chat.completion",
+    "created": 1778825436,
+    "model": "gemma4-26b-a4b-nvfp4",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"status\":\"ok\",\"evidence_count\":1}",
+          "refusal": null,
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [],
+          "reasoning": null
+        },
+        "logprobs": null,
+        "finish_reason": "stop",
+        "stop_reason": 106,
+        "token_ids": null
+      }
+    ],
+    "service_tier": null,
+    "system_fingerprint": "vllm-0.20.2rc1.dev9+g01d4d1ad3-1aa223bd",
+    "usage": {
+      "prompt_tokens": 37,
+      "total_tokens": 49,
+      "completion_tokens": 12,
+      "prompt_tokens_details": null
+    },
+    "prompt_logprobs": null,
+    "prompt_token_ids": null,
+    "kv_transfer_params": null
+  }
+}

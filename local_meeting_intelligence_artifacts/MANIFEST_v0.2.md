@@ -38,6 +38,8 @@ meeting intelligence pack.
 - `requirements-validation.txt`: minimal Python dependencies for running the pack validation script.
 - `configs/benchmark_manifest.yaml`: golden-set benchmark targets and pass/fail gates.
 - `docs/model_evidence_register.md`: researched source register and candidate interpretation.
+- `runs/20260515T055927Z/`: first live `LMI-000` model-fit/kernel-stress
+  evidence bundle; no candidate promoted.
 
 ## Background Planning Artifact
 

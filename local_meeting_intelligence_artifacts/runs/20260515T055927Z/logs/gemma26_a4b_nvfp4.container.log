@@ -1,0 +1,234 @@
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]        █     █     █▄   ▄█
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.20.2rc1.dev9+g01d4d1ad3
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]   █▄█▀ █     █     █     █  model   /workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:299]
+(APIServer pid=1) INFO 05-15 06:05:06 [utils.py:233] non-default args: {'enable_auto_tool_choice': True, 'tool_call_parser': 'gemma4', 'host': '0.0.0.0', 'port': 18121, 'api_key': ['EMPTY'], 'model': '/workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6', 'trust_remote_code': True, 'max_model_len': 32768, 'served_model_name': ['gemma4-26b-a4b-nvfp4'], 'reasoning_parser': 'gemma4', 'gpu_memory_utilization': 0.95, 'kv_cache_dtype': 'fp8', 'enable_prefix_caching': True, 'language_model_only': True, 'limit_mm_per_prompt': {'image': 0}, 'max_num_batched_tokens': 4096, 'max_num_seqs': 1}
+(APIServer pid=1) WARNING 05-15 06:05:06 [envs.py:1855] Unknown vLLM environment variable detected: VLLM_BUILD_COMMIT
+(APIServer pid=1) WARNING 05-15 06:05:06 [envs.py:1855] Unknown vLLM environment variable detected: VLLM_BUILD_PIPELINE
+(APIServer pid=1) WARNING 05-15 06:05:06 [envs.py:1855] Unknown vLLM environment variable detected: VLLM_BUILD_URL
+(APIServer pid=1) WARNING 05-15 06:05:06 [envs.py:1855] Unknown vLLM environment variable detected: VLLM_IMAGE_TAG
+(APIServer pid=1) INFO 05-15 06:05:16 [nixl_utils.py:20] Setting UCX_RCACHE_MAX_UNRELEASED to '1024' to avoid a rare memory leak in UCX when using NIXL.
+(APIServer pid=1) INFO 05-15 06:05:16 [nixl_utils.py:32] NIXL is available
+(APIServer pid=1) INFO 05-15 06:05:16 [model.py:563] Resolved architecture: Gemma4ForConditionalGeneration
+(APIServer pid=1) INFO 05-15 06:05:16 [model.py:1692] Using max model len 32768
+(APIServer pid=1) INFO 05-15 06:05:17 [cache.py:261] Using fp8 data type to store kv cache. It reduces the GPU memory footprint and boosts the performance. Meanwhile, it may cause accuracy drop without a proper scaling factor
+(APIServer pid=1) INFO 05-15 06:05:17 [scheduler.py:239] Chunked prefill is enabled with max_num_batched_tokens=4096.
+(APIServer pid=1) INFO 05-15 06:05:17 [config.py:101] Gemma4 model has heterogeneous head dimensions (head_dim=256, global_head_dim=512). Forcing TRITON_ATTN backend to prevent mixed-backend numerical divergence.
+(APIServer pid=1) WARNING 05-15 06:05:17 [modelopt.py:1014] Detected ModelOpt NVFP4 checkpoint. Please note that the format is experimental and could change in future.
+(APIServer pid=1) INFO 05-15 06:05:17 [vllm.py:844] Asynchronous scheduling is enabled.
+(APIServer pid=1) INFO 05-15 06:05:17 [kernel.py:210] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'])
+(APIServer pid=1) WARNING 05-15 06:05:17 [cuda.py:233] Forcing --disable_chunked_mm_input for models with multimodal-bidirectional attention.
+(APIServer pid=1) INFO 05-15 06:05:19 [compilation.py:303] Enabled custom fusions: act_quant
+(APIServer pid=1) INFO 05-15 06:05:19 [registry.py:126] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+INFO 05-15 06:05:25 [nixl_utils.py:32] NIXL is available
+(EngineCore pid=181) INFO 05-15 06:05:25 [core.py:109] Initializing a V1 LLM engine (v0.20.2rc1.dev9+g01d4d1ad3) with config: model='/workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6', speculative_config=None, tokenizer='/workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=modelopt_fp4, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=fp8, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='gemma4', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=gemma4-26b-a4b-nvfp4, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [4096], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'fuse_act_padding': False}, 'max_cudagraph_capture_size': 2, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native']), enable_flashinfer_autotune=False, moe_backend='auto')
+(EngineCore pid=181) INFO 05-15 06:05:28 [registry.py:126] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(EngineCore pid=181) INFO 05-15 06:05:28 [parallel_state.py:1410] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://10.25.0.50:42121 backend=nccl
+(EngineCore pid=181) INFO 05-15 06:05:28 [parallel_state.py:1723] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank 0, EPLB rank N/A
+(EngineCore pid=181) INFO 05-15 06:05:29 [topk_topp_sampler.py:45] Using FlashInfer for top-p & top-k sampling.
+(EngineCore pid=181) INFO 05-15 06:05:29 [gpu_model_runner.py:4819] Starting to load model /workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6...
+(EngineCore pid=181) INFO 05-15 06:05:30 [vllm.py:844] Asynchronous scheduling is enabled.
+(EngineCore pid=181) INFO 05-15 06:05:30 [kernel.py:210] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'])
+(EngineCore pid=181) INFO 05-15 06:05:30 [compilation.py:303] Enabled custom fusions: act_quant
+(EngineCore pid=181) INFO 05-15 06:05:30 [cuda.py:308] Using AttentionBackendEnum.TRITON_ATTN backend.
+(EngineCore pid=181) INFO 05-15 06:05:30 [nvfp4.py:282] Using 'VLLM_CUTLASS' NvFp4 MoE backend out of potential backends: ['FLASHINFER_TRTLLM', 'FLASHINFER_CUTEDSL', 'FLASHINFER_CUTEDSL_BATCHED', 'FLASHINFER_CUTLASS', 'VLLM_CUTLASS', 'MARLIN', 'EMULATION'].
+(EngineCore pid=181) INFO 05-15 06:05:30 [cuda.py:308] Using AttentionBackendEnum.TRITON_ATTN backend.
+(EngineCore pid=181) INFO 05-15 06:05:30 [weight_utils.py:904] Filesystem type for checkpoints: ZFS. Checkpoint size: 17.50 GiB. Available RAM: 94.30 GiB.
+(EngineCore pid=181) INFO 05-15 06:05:30 [weight_utils.py:927] Auto-prefetch is disabled because the filesystem (ZFS) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+(EngineCore pid=181)
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+(EngineCore pid=181)
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:04<00:04,  4.29s/it]
+(EngineCore pid=181)
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:09<00:00,  4.92s/it]
+(EngineCore pid=181)
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:09<00:00,  4.83s/it]
+(EngineCore pid=181)
+(EngineCore pid=181) INFO 05-15 06:05:40 [default_loader.py:391] Loading weights took 10.07 seconds
+(EngineCore pid=181) WARNING 05-15 06:05:40 [kv_cache.py:109] Checkpoint does not provide a q scaling factor. Setting it to k_scale. This only matters for FP8 Attention backends (flash-attn or flashinfer).
+(EngineCore pid=181) WARNING 05-15 06:05:40 [kv_cache.py:123] Using KV cache scaling factor 1.0 for fp8_e4m3. If this is unintended, verify that k/v_scale scaling factors are properly set in the checkpoint.
+(EngineCore pid=181) WARNING 05-15 06:05:40 [kv_cache.py:162] Using uncalibrated q_scale 1.0 and/or prob_scale 1.0 with fp8 attention. This may cause accuracy issues. Please make sure q/prob scaling factors are available in the fp8 checkpoint.
+(EngineCore pid=181) WARNING 05-15 06:05:41 [modelopt.py:1376] w1_weight_scale_2 must match w3_weight_scale_2. Accuracy may be affected.
+(EngineCore pid=181) INFO 05-15 06:05:41 [nvfp4.py:491] Using MoEPrepareAndFinalizeNoDPEPModular
+(EngineCore pid=181) INFO 05-15 06:05:41 [gpu_model_runner.py:4921] Model loading took 16.83 GiB memory and 10.957074 seconds
+(EngineCore pid=181) INFO 05-15 06:05:50 [backends.py:1089] Using cache directory: /workspace/vllm-cache/torch_compile_cache/b4e8c7eedf/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=181) INFO 05-15 06:05:50 [backends.py:1148] Dynamo bytecode transform time: 8.68 s
+(EngineCore pid=181) INFO 05-15 06:06:04 [backends.py:378] Cache the graph of compile range (1, 4096) for later use
+(EngineCore pid=181) INFO 05-15 06:06:31 [backends.py:393] Compiling a graph for compile range (1, 4096) takes 40.64 s
+(EngineCore pid=181) INFO 05-15 06:06:35 [decorators.py:708] saved AOT compiled function to /workspace/vllm-cache/torch_compile_cache/torch_aot_compile/81dae28e2851b47f722218d5f416255fbcfaeeb6fc48598c52c83ed3eb8d44f0/rank_0_0/model
+(EngineCore pid=181) INFO 05-15 06:06:35 [monitor.py:53] torch.compile took 54.20 s in total
+(EngineCore pid=181) INFO 05-15 06:06:38 [monitor.py:81] Initial profiling/warmup run took 2.43 s
+(EngineCore pid=181) INFO 05-15 06:06:39 [gpu_model_runner.py:6025] Profiling CUDA graph memory: PIECEWISE=2 (largest=2), FULL=1 (largest=1)
+(EngineCore pid=181) INFO 05-15 06:06:42 [gpu_model_runner.py:6104] Estimated CUDA graph memory: 0.25 GiB total
+(EngineCore pid=181) INFO 05-15 06:06:43 [gpu_worker.py:460] Available KV cache memory: 3.63 GiB
+(EngineCore pid=181) INFO 05-15 06:06:43 [gpu_worker.py:475] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.9500 is equivalent to --gpu-memory-utilization=0.9394 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9606. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=181) INFO 05-15 06:06:43 [kv_cache_utils.py:1710] GPU KV cache size: 148,097 tokens
+(EngineCore pid=181) INFO 05-15 06:06:43 [kv_cache_utils.py:1711] Maximum concurrency for 32,768 tokens per request: 4.52x
+(EngineCore pid=181) INFO 05-15 06:06:43 [kernel_warmup.py:44] Skipping FlashInfer autotune because it is disabled.
+(EngineCore pid=181)
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/2 [00:00<?, ?it/s]
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 2/2 [00:00<00:00, 15.39it/s]
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 2/2 [00:00<00:00, 15.37it/s]
+(EngineCore pid=181)
+Capturing CUDA graphs (decode, FULL):   0%|          | 0/1 [00:00<?, ?it/s]
+Capturing CUDA graphs (decode, FULL): 100%|██████████| 1/1 [00:00<00:00, 15.03it/s]
+(EngineCore pid=181) INFO 05-15 06:06:44 [gpu_model_runner.py:6195] Graph capturing finished in 1 secs, took 0.24 GiB
+(EngineCore pid=181) INFO 05-15 06:06:44 [gpu_worker.py:619] CUDA graph pool memory: 0.24 GiB (actual), 0.25 GiB (estimated), difference: 0.01 GiB (4.1%).
+(EngineCore pid=181) INFO 05-15 06:06:44 [core.py:299] init engine (profile, create kv cache, warmup model) took 62.72 s (compilation: 54.20 s)
+(EngineCore pid=181) INFO 05-15 06:06:44 [kernel.py:210] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'])
+(APIServer pid=1) INFO 05-15 06:06:44 [api_server.py:598] Supported tasks: ['generate']
+(APIServer pid=1) INFO 05-15 06:06:44 [parser_manager.py:202] "auto" tool choice has been enabled.
+(APIServer pid=1) WARNING 05-15 06:06:44 [model.py:1449] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'temperature': 1.0, 'top_k': 64, 'top_p': 0.95}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+(APIServer pid=1) INFO 05-15 06:06:47 [hf.py:482] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=1) INFO 05-15 06:06:47 [api_server.py:602] Starting vLLM server on http://0.0.0.0:18121
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:37] Available routes are:
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /openapi.json, Methods: GET, HEAD
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /docs, Methods: GET, HEAD
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /docs/oauth2-redirect, Methods: GET, HEAD
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /redoc, Methods: GET, HEAD
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /tokenize, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /detokenize, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /load, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /version, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /health, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /metrics, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/models, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /ping, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /ping, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /invocations, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/chat/completions, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/chat/completions/batch, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/responses, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/responses/{response_id}, Methods: GET
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/responses/{response_id}/cancel, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/completions, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/messages, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/messages/count_tokens, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /inference/v1/generate, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /scale_elastic_ep, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /is_scaling_elastic_ep, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /generative_scoring, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/chat/completions/render, Methods: POST
+(APIServer pid=1) INFO 05-15 06:06:47 [launcher.py:46] Route: /v1/completions/render, Methods: POST
+(APIServer pid=1) INFO:     Started server process [1]
+(APIServer pid=1) INFO:     Waiting for application startup.
+(APIServer pid=1) INFO:     Application startup complete.
+(APIServer pid=1) INFO:     127.0.0.1:50876 - "GET /health HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:50892 - "POST /v1/chat/completions HTTP/1.1" 401 Unauthorized
+(APIServer pid=1) INFO:     127.0.0.1:56422 - "GET /v1/models HTTP/1.1" 401 Unauthorized
+(APIServer pid=1) INFO:     127.0.0.1:38038 - "GET /v1/models HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:38042 - "GET /health HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:47738 - "GET /v1/models HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:47750 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:47752 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO 05-15 06:10:37 [loggers.py:271] Engine 000: Avg prompt throughput: 829.7 tokens/s, Avg generation throughput: 1.8 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 4.9%, Prefix cache hit rate: 0.0%
+(APIServer pid=1) INFO:     127.0.0.1:47766 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:47782 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43434 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
+(APIServer pid=1) ERROR:    Exception in ASGI application
+(APIServer pid=1) Traceback (most recent call last):
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 421, in run_asgi
+(APIServer pid=1)     result = await app(  # type: ignore[func-returns-value]
+(APIServer pid=1)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/uvicorn/middleware/proxy_headers.py", line 56, in __call__
+(APIServer pid=1)     return await self.app(scope, receive, send)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/applications.py", line 1159, in __call__
+(APIServer pid=1)     await super().__call__(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/applications.py", line 107, in __call__
+(APIServer pid=1)     await self.middleware_stack(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+(APIServer pid=1)     raise exc
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+(APIServer pid=1)     await self.app(scope, receive, _send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/cors.py", line 87, in __call__
+(APIServer pid=1)     await self.app(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/prometheus_fastapi_instrumentator/middleware.py", line 177, in __call__
+(APIServer pid=1)     raise exc
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/prometheus_fastapi_instrumentator/middleware.py", line 175, in __call__
+(APIServer pid=1)     await self.app(scope, receive, send_wrapper)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+(APIServer pid=1)     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+(APIServer pid=1)     raise exc
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+(APIServer pid=1)     await app(scope, receive, sender)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+(APIServer pid=1)     await self.app(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/routing.py", line 716, in __call__
+(APIServer pid=1)     await self.middleware_stack(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/routing.py", line 736, in app
+(APIServer pid=1)     await route.handle(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/routing.py", line 290, in handle
+(APIServer pid=1)     await self.app(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 134, in app
+(APIServer pid=1)     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+(APIServer pid=1)     raise exc
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+(APIServer pid=1)     await app(scope, receive, sender)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 120, in app
+(APIServer pid=1)     response = await f(request)
+(APIServer pid=1)                ^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 674, in app
+(APIServer pid=1)     raw_response = await run_endpoint_function(
+(APIServer pid=1)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/fastapi/routing.py", line 328, in run_endpoint_function
+(APIServer pid=1)     return await dependant.call(**values)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/utils.py", line 95, in wrapper
+(APIServer pid=1)     return handler_task.result()
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/utils.py", line 116, in wrapper
+(APIServer pid=1)     return await func(*args, **kwargs)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/chat_completion/api_router.py", line 61, in create_chat_completion
+(APIServer pid=1)     generator = await handler.create_chat_completion(request, raw_request)
+(APIServer pid=1)                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/chat_completion/serving.py", line 251, in create_chat_completion
+(APIServer pid=1)     result = await self.render_chat_request(request)
+(APIServer pid=1)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/chat_completion/serving.py", line 227, in render_chat_request
+(APIServer pid=1)     return await self.openai_serving_render.render_chat(request)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/serve/render/serving.py", line 249, in render_chat
+(APIServer pid=1)     conversation, engine_inputs = await self.preprocess_chat(
+(APIServer pid=1)                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/serve/render/serving.py", line 560, in preprocess_chat
+(APIServer pid=1)     (conversation,), (engine_input,) = await renderer.render_chat_async(
+(APIServer pid=1)                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/base.py", line 1032, in render_chat_async
+(APIServer pid=1)     tok_prompts = await self.tokenize_prompts_async(dict_prompts, tok_params)
+(APIServer pid=1)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/base.py", line 592, in tokenize_prompts_async
+(APIServer pid=1)     return await asyncio.gather(
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/base.py", line 585, in tokenize_prompt_async
+(APIServer pid=1)     return await self._tokenize_singleton_prompt_async(prompt, params)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/base.py", line 518, in _tokenize_singleton_prompt_async
+(APIServer pid=1)     return params.apply_post_tokenization(self.tokenizer, prompt)  # type: ignore[arg-type]
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/params.py", line 455, in apply_post_tokenization
+(APIServer pid=1)     prompt["prompt_token_ids"] = self._validate_tokens(  # type: ignore[typeddict-unknown-key]
+(APIServer pid=1)                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/params.py", line 439, in _validate_tokens
+(APIServer pid=1)     tokens = validator(tokenizer, tokens)
+(APIServer pid=1)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/renderers/params.py", line 418, in _token_len_check
+(APIServer pid=1)     raise VLLMValidationError(
+(APIServer pid=1) vllm.exceptions.VLLMValidationError: This model's maximum context length is 32768 tokens. However, you requested 32 output tokens and your prompt contains at least 32737 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=32737)
+(APIServer pid=1) INFO:     127.0.0.1:43438 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43450 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43466 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43470 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43474 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43486 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43502 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43524 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO:     127.0.0.1:43532 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=1) INFO 05-15 06:10:47 [loggers.py:271] Engine 000: Avg prompt throughput: 1682.6 tokens/s, Avg generation throughput: 11.2 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=1) INFO 05-15 06:10:57 [loggers.py:271] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%

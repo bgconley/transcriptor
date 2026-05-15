@@ -1,0 +1,280 @@
+{
+  "run_id": "20260515T055927Z",
+  "generated_utc": "2026-05-15T06:14:42Z",
+  "gate": "LMI-000 model fit, serving framework, and kernel stress gate",
+  "overall_status": "failed_no_candidate_promoted",
+  "notes": [
+    "Tests were run against staged assets only; no runtime model downloads were allowed for missing builder candidates.",
+    "Two exact builder matrix candidates were not staged on blackbird, so they are blocked before load testing.",
+    "Two observed 10.25.0.50 NVFP4 candidates loaded and served, but both fail promotion thresholds due context/headroom or JSON consistency issues."
+  ],
+  "profiles": [
+    {
+      "profile_id": "builder_fallback_mistral_small_4_119b_nvfp4_fit",
+      "host": "10.25.0.51",
+      "status": "blocked_missing_staged_model",
+      "expected_model_id": "mistralai/Mistral-Small-4-119B-2603-NVFP4",
+      "evidence": "Search of /home/bgconley/models, Hugging Face cache, /var/cache, and /opt found no Mistral paths on blackbird. GPU was idle at 2 MiB used.",
+      "promotion": "not_promoted"
+    },
+    {
+      "profile_id": "builder_primary_mistral_medium_3_5_128b_fit",
+      "host": "10.25.0.51",
+      "status": "blocked_missing_staged_model",
+      "expected_model_id": "mistralai/Mistral-Medium-3.5-128B",
+      "evidence": "Search of /home/bgconley/models, Hugging Face cache, /var/cache, and /opt found no Mistral paths on blackbird. GPU was idle at 2 MiB used.",
+      "promotion": "not_promoted"
+    },
+    {
+      "profile_id": "extractor_qwen3_6_27b_fit",
+      "host": "10.25.0.50",
+      "status": "tested_rejected",
+      "expected_model_id": "Qwen/Qwen3.6-27B",
+      "observed_model_id": "sakamakismile/Qwen3.6-27B-NVFP4",
+      "served_model_name": "qwen36-27b-nvfp4",
+      "runtime": "vllm voipmonitor/vllm:cu130",
+      "vllm_version": "0.19.1rc1.dev29+g93726b2a1.d20260404",
+      "max_model_len": 18816,
+      "cold_load": "passed",
+      "plain_smoke": {
+        "ok": true,
+        "status": 200,
+        "elapsed_sec": 0.333,
+        "finish_reason": "stop",
+        "content": "smoke-ok",
+        "content_len": 8,
+        "has_reasoning": false,
+        "usage": {
+          "prompt_tokens": 30,
+          "total_tokens": 34,
+          "completion_tokens": 4,
+          "prompt_tokens_details": null
+        }
+      },
+      "structured_smoke": {
+        "ok": true,
+        "status": 200,
+        "elapsed_sec": 0.472,
+        "finish_reason": "stop",
+        "content": "{\"status\":\"ok\",\"evidence_count\":1}",
+        "content_len": 34,
+        "has_reasoning": false,
+        "usage": {
+          "prompt_tokens": 40,
+          "total_tokens": 52,
+          "completion_tokens": 12,
+          "prompt_tokens_details": null
+        },
+        "json_valid": true
+      },
+      "context_sweep": [
+        {
+          "requested_repeated_words": 8192,
+          "ok": true,
+          "status": 200,
+          "prompt_tokens": 8235,
+          "total_tokens": 8238,
+          "content": "context-ok",
+          "error_message": null
+        },
+        {
+          "requested_repeated_words": 16384,
+          "ok": true,
+          "status": 200,
+          "prompt_tokens": 16428,
+          "total_tokens": 16431,
+          "content": "context-ok",
+          "error_message": null
+        },
+        {
+          "requested_repeated_words": 32768,
+          "ok": false,
+          "status": 400,
+          "prompt_tokens": null,
+          "total_tokens": null,
+          "content": null,
+          "error_message": "This model's maximum context length is 18816 tokens. However, you requested 32 output tokens and your prompt contains at least 18785 input tokens, for a total of at least 18817 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=18785)"
+        },
+        {
+          "requested_repeated_words": 65536,
+          "ok": false,
+          "status": 400,
+          "prompt_tokens": null,
+          "total_tokens": null,
+          "content": null,
+          "error_message": "This model's maximum context length is 18816 tokens. However, you requested 32 output tokens and your prompt contains at least 18785 input tokens, for a total of at least 18817 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=18785)"
+        }
+      ],
+      "repeat_json_valid": {
+        "valid": 10,
+        "total": 10
+      },
+      "kernel_evidence": {
+        "architecture": "Qwen3_5ForConditionalGeneration",
+        "quantization": "compressed-tensors / nvfp4-pack-quantized checkpoint",
+        "nvfp4_backend": "NvFp4LinearBackend.VLLM_CUTLASS",
+        "attention_backend": "FLASHINFER for language attention; FLASH_ATTN for VIT/MM encoder attention",
+        "linear_attention": "Triton/FLA GDN prefill kernel",
+        "kv_cache_dtype": "fp8",
+        "gpu_kv_cache_tokens": 18816,
+        "maximum_concurrency": "2.78x at 18816 tokens",
+        "load_memory": "17.62 GiB model loading memory"
+      },
+      "peak_observed_gpu": {
+        "memory_used_mib": 23711,
+        "memory_free_mib": 279
+      },
+      "threshold_failures": [
+        "minimum_context_tokens 16384 passed but 32768/65536 failed",
+        "minimum_vram_headroom_gib 1.5 failed; observed free headroom dropped below 1 GiB during sweep",
+        "registry model identity differs from expected Qwen/Qwen3.6-27B"
+      ],
+      "promotion": "not_promoted"
+    },
+    {
+      "profile_id": "validator_gemma_4_31b_nvfp4_fit",
+      "host": "10.25.0.50",
+      "status": "blocked_missing_exact_model",
+      "expected_model_id": "nvidia/Gemma-4-31B-IT-NVFP4",
+      "evidence": "The staged 31B asset on 10.25.0.50 is RedHatAI/gemma-4-31B-it-FP8-block, not the NVFP4 matrix candidate. It was not substituted into this profile.",
+      "promotion": "not_promoted"
+    },
+    {
+      "profile_id": "validator_gemma_4_26b_a4b_fallback_fit",
+      "host": "10.25.0.50",
+      "status": "tested_rejected",
+      "expected_model_id": "google/gemma-4-26B-A4B",
+      "observed_model_id": "nvidia/Gemma-4-26B-A4B-NVFP4",
+      "served_model_name": "gemma4-26b-a4b-nvfp4",
+      "runtime": "vllm vllm-gemma4-pr40391:cu130",
+      "vllm_version": "0.20.2rc1.dev9+g01d4d1ad3",
+      "max_model_len": 32768,
+      "cold_load": "passed after removing incorrect inner CUDA_VISIBLE_DEVICES remap",
+      "plain_smoke": {
+        "ok": true,
+        "status": 200,
+        "elapsed_sec": 2.008,
+        "finish_reason": "stop",
+        "content": "smoke-ok",
+        "content_len": 8,
+        "has_reasoning": false,
+        "usage": {
+          "prompt_tokens": 28,
+          "total_tokens": 32,
+          "completion_tokens": 4,
+          "prompt_tokens_details": null
+        }
+      },
+      "structured_smoke": {
+        "ok": true,
+        "status": 200,
+        "elapsed_sec": 0.18,
+        "finish_reason": "stop",
+        "content": "{\"status\":\"ok\",\"evidence_count\":1}",
+        "content_len": 34,
+        "has_reasoning": false,
+        "usage": {
+          "prompt_tokens": 37,
+          "total_tokens": 49,
+          "completion_tokens": 12,
+          "prompt_tokens_details": null
+        },
+        "json_valid": true
+      },
+      "context_sweep": [
+        {
+          "requested_repeated_words": 8192,
+          "ok": true,
+          "status": 200,
+          "prompt_tokens": 8233,
+          "total_tokens": 8237,
+          "content": "context-ok",
+          "error_message": null
+        },
+        {
+          "requested_repeated_words": 16384,
+          "ok": true,
+          "status": 200,
+          "prompt_tokens": 16426,
+          "total_tokens": 16430,
+          "content": "context-ok",
+          "error_message": null
+        },
+        {
+          "requested_repeated_words": 32768,
+          "ok": false,
+          "status": 400,
+          "prompt_tokens": null,
+          "total_tokens": null,
+          "content": null,
+          "error_message": "This model's maximum context length is 32768 tokens. However, you requested 32 output tokens and your prompt contains at least 32737 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=32737)"
+        }
+      ],
+      "repeat_json_valid": {
+        "valid": 9,
+        "total": 10,
+        "failure": "repeat 7 returned fenced ```json block"
+      },
+      "kernel_evidence": {
+        "architecture": "Gemma4ForConditionalGeneration",
+        "quantization": "modelopt_fp4; ModelOpt NVFP4 experimental checkpoint detected",
+        "attention_backend": "TRITON_ATTN forced because heterogeneous head dimensions would otherwise risk mixed-backend numerical divergence",
+        "moe_backend": "VLLM_CUTLASS NvFp4 MoE backend selected from FLASHINFER/TRTLLM/CUTEDSL/CUTLASS/MARLIN/EMULATION candidates",
+        "kv_cache_dtype": "fp8",
+        "load_memory": "16.83 GiB model loading memory"
+      },
+      "peak_observed_gpu": {
+        "memory_used_mib": 23330,
+        "memory_free_mib": 660
+      },
+      "warnings": [
+        "uncalibrated fp8 KV q/prob scaling factors",
+        "w1_weight_scale_2 must match w3_weight_scale_2; accuracy may be affected",
+        "first launch failed with NVML invalid argument due Docker GPU mapping plus CUDA_VISIBLE_DEVICES=1"
+      ],
+      "threshold_failures": [
+        "32768 context probe failed because prompt plus output exceeded max_model_len by one token",
+        "minimum_vram_headroom_gib 1.5 failed; observed free headroom below 1 GiB during sweep",
+        "JSON validity 9/10 below validator threshold",
+        "registry/source model identity differs from matrix expectation"
+      ],
+      "promotion": "not_promoted"
+    }
+  ],
+  "unload": {
+    "containers_stopped": [
+      "lmi-fit-qwen27-nvfp4",
+      "lmi-fit-gemma26-a4b-nvfp4"
+    ],
+    "gpu_after_unload": [
+      {
+        "index": "0",
+        "name": "NVIDIA RTX PRO 4000 Blackwell",
+        "memory.used [MiB]": "2 MiB",
+        "memory.free [MiB]": "23988 MiB",
+        "utilization.gpu [%]": "0 %",
+        "pstate": "P8",
+        "temperature.gpu": "41",
+        "power.draw [W]": "5.52 W"
+      },
+      {
+        "index": "1",
+        "name": "NVIDIA RTX PRO 4000 Blackwell",
+        "memory.used [MiB]": "2 MiB",
+        "memory.free [MiB]": "23988 MiB",
+        "utilization.gpu [%]": "0 %",
+        "pstate": "P8",
+        "temperature.gpu": "38",
+        "power.draw [W]": "6.05 W"
+      }
+    ],
+    "compute_apps_after_unload": "none",
+    "result": "passed"
+  },
+  "artifacts": {
+    "raw_sweeps": "endpoint_sweeps/",
+    "container_logs": "logs/",
+    "docker_inspect": "docker/",
+    "unload_verification": "unload_verification.log"
+  }
+}

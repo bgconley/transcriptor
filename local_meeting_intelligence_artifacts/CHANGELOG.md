@@ -5,6 +5,8 @@
 Added:
 - agentic coder handoff brief
 - ordered implementation backlog with acceptance commands
+- first live `LMI-000` model-fit/kernel-stress run artifacts under
+  `runs/20260515T055927Z`
 - testing strategy and review checklist
 - executable pack validation script
 - validation bootstrap dependencies
@@ -35,6 +37,8 @@ Changed:
 - orchestrator state machine now starts with deployment preflight
 - implementation backlog now starts with `LMI-000` model fit/kernel stress before normal pipeline work
 - GPU model eviction is recorded as authorized while preserving non-model services
+- model evidence register now records measured Qwen/Gemma NVFP4 fit-gate
+  results and the blocked Mistral builder staging state
 
 Not changed:
 - workbook remains the v0.1 decision matrix and has not been edited

@@ -1,0 +1,297 @@
+{
+  "profile": {
+    "name": "validator_gemma26_a4b_nvfp4_observed",
+    "profile_id": "validator_gemma_4_26b_a4b_fallback_fit",
+    "base_url": "http://127.0.0.1:18121/v1",
+    "model": "gemma4-26b-a4b-nvfp4",
+    "headers": {
+      "Authorization": "Bearer EMPTY"
+    },
+    "context_tokens": [
+      8192,
+      16384,
+      32768
+    ],
+    "chat_template_kwargs": {},
+    "prompt_suffix": "\nReturn only the requested final answer."
+  },
+  "models": {
+    "ok": true,
+    "status": 200,
+    "elapsed_sec": 0.001,
+    "body": {
+      "object": "list",
+      "data": [
+        {
+          "id": "gemma4-26b-a4b-nvfp4",
+          "object": "model",
+          "created": 1778825434,
+          "owned_by": "vllm",
+          "root": "/workspace/hf-cache/hub/models--nvidia--Gemma-4-26B-A4B-NVFP4/snapshots/a19cfe00be84568a6867111c9a68c9c44fdcffe6",
+          "parent": null,
+          "max_model_len": 32768,
+          "permission": [
+            {
+              "id": "modelperm-9b92b8ee57869192",
+              "object": "model_permission",
+              "created": 1778825434,
+              "allow_create_engine": false,
+              "allow_sampling": true,
+              "allow_logprobs": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "allow_fine_tuning": false,
+              "organization": "*",
+              "group": null,
+              "is_blocking": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "plain_smoke": {
+    "ok": true,
+    "status": 200,
+    "elapsed_sec": 2.008,
+    "finish_reason": "stop",
+    "content": "smoke-ok",
+    "content_len": 8,
+    "has_reasoning": false,
+    "usage": {
+      "prompt_tokens": 28,
+      "total_tokens": 32,
+      "completion_tokens": 4,
+      "prompt_tokens_details": null
+    }
+  },
+  "structured_smoke": {
+    "ok": true,
+    "status": 200,
+    "elapsed_sec": 0.18,
+    "finish_reason": "stop",
+    "content": "{\"status\":\"ok\",\"evidence_count\":1}",
+    "content_len": 34,
+    "has_reasoning": false,
+    "usage": {
+      "prompt_tokens": 37,
+      "total_tokens": 49,
+      "completion_tokens": 12,
+      "prompt_tokens_details": null
+    },
+    "json_valid": true
+  },
+  "context_sweep": [
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 1.025,
+      "finish_reason": "stop",
+      "content": "context-ok",
+      "content_len": 10,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 8233,
+        "total_tokens": 8237,
+        "completion_tokens": 4,
+        "prompt_tokens_details": null
+      },
+      "requested_repeated_words": 8192
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 2.02,
+      "finish_reason": "stop",
+      "content": "context-ok",
+      "content_len": 10,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 16426,
+        "total_tokens": 16430,
+        "completion_tokens": 4,
+        "prompt_tokens_details": null
+      },
+      "requested_repeated_words": 16384
+    },
+    {
+      "ok": false,
+      "status": 400,
+      "elapsed_sec": 0.102,
+      "parse_error": true,
+      "body_excerpt": "{}",
+      "error": {
+        "error": {
+          "message": "This model's maximum context length is 32768 tokens. However, you requested 32 output tokens and your prompt contains at least 32737 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=32737)",
+          "type": "BadRequestError",
+          "param": "input_tokens",
+          "code": 400
+        }
+      },
+      "requested_repeated_words": 32768
+    }
+  ],
+  "repeat": [
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.15,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":1}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.154,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":2}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.154,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":3}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.155,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":4}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.155,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":5}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.154,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":6}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.216,
+      "finish_reason": "stop",
+      "content": "```json\n{\"status\":\"ok\",\"iteration\":7}\n```",
+      "content_len": 41,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 55,
+        "completion_tokens": 15,
+        "prompt_tokens_details": null
+      },
+      "json_valid": false,
+      "json_error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.154,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":8}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.155,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":9}",
+      "content_len": 29,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 40,
+        "total_tokens": 50,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "elapsed_sec": 0.167,
+      "finish_reason": "stop",
+      "content": "{\"status\":\"ok\",\"iteration\":10}",
+      "content_len": 30,
+      "has_reasoning": false,
+      "usage": {
+        "prompt_tokens": 42,
+        "total_tokens": 53,
+        "completion_tokens": 11,
+        "prompt_tokens_details": null
+      },
+      "json_valid": true
+    }
+  ]
+}

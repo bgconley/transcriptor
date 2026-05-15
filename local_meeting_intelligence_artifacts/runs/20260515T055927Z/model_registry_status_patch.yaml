@@ -1,0 +1,39 @@
+version: 0.1
+purpose: measured_model_registry_status_patch_from_run_20260515T055927Z
+
+patches:
+  - registry_id: builder_fallback_mistral_small_4_119b_nvfp4
+    measured_status: blocked_missing_staged_model
+    production_status: not_promoted
+    required_next_step: stage exact model artifact on 10.25.0.51 or replace candidate in matrix
+
+  - registry_id: builder_primary_mistral_medium_3_5_128b
+    measured_status: blocked_missing_staged_model
+    production_status: not_promoted
+    required_next_step: stage exact quantized model artifact on 10.25.0.51 or replace candidate in matrix
+
+  - registry_id: extractor_primary_qwen3_6_27b
+    measured_status: tested_rejected_with_observed_substitute
+    observed_model_id: sakamakismile/Qwen3.6-27B-NVFP4
+    observed_served_model_name: qwen36-27b-nvfp4
+    production_status: not_promoted
+    reject_reasons:
+      - observed model id differs from registry expectation Qwen/Qwen3.6-27B
+      - target 32768 and 65536 context probes failed against 18816 max model length
+      - observed VRAM headroom below threshold during sweep
+
+  - registry_id: validator_primary_gemma_4_31b_nvfp4
+    measured_status: blocked_missing_exact_model
+    production_status: not_promoted
+    required_next_step: stage nvidia/Gemma-4-31B-IT-NVFP4 or update matrix to the actually staged FP8 model
+
+  - registry_id: validator_fallback_gemma_4_26b_a4b
+    measured_status: tested_rejected_with_source_drift
+    observed_model_id: nvidia/Gemma-4-26B-A4B-NVFP4
+    observed_served_model_name: gemma4-26b-a4b-nvfp4
+    production_status: not_promoted
+    reject_reasons:
+      - registry expected google/gemma-4-26B-A4B but staged model is nvidia/Gemma-4-26B-A4B-NVFP4
+      - observed VRAM headroom below threshold during sweep
+      - repeat JSON validity was 9/10 due one fenced json block
+      - 32768 context probe exceeded max length once output tokens were included
