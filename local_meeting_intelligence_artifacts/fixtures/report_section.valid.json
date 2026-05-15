@@ -1,0 +1,35 @@
+{
+  "meeting_id": "MEET-0001",
+  "section_id": "networking_architecture",
+  "section_title": "Networking Architecture",
+  "integrity_notes": [
+    "Speaker ownership for REQ-0001 requires human review."
+  ],
+  "draft_markdown": "## Networking Architecture\n\nThe transcript states that the delegated subnet must be confirmed before cutover [REQ-0001]. Speaker ownership is not yet confirmed.",
+  "claims": [
+    {
+      "claim_id": "CLM-0001",
+      "claim_text": "The delegated subnet must be confirmed before cutover.",
+      "explicitness": "transcript_stated",
+      "supporting_evidence_ids": [
+        "REQ-0001"
+      ],
+      "supporting_segment_ids": [
+        "SEG-000001"
+      ],
+      "confidence": "high",
+      "notes": "Ownership is unknown."
+    }
+  ],
+  "required_subsections_covered": [
+    "subnets",
+    "cutover_networking"
+  ],
+  "missing_required_subsections": [
+    "routing",
+    "firewall_paths"
+  ],
+  "builder_model": "mistralai/Mistral-Medium-3.5-128B",
+  "prompt_version": "builder-v0.2",
+  "status": "draft"
+}

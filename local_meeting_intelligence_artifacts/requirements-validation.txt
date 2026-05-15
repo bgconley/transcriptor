@@ -1,0 +1,6 @@
+# Dependencies required to run scripts/validate_pack.py.
+# The eventual implementation may use a richer pyproject.toml; keep this file
+# small so the artifact pack can validate before implementation scaffolding
+# exists.
+jsonschema>=4.22,<5
+PyYAML>=6,<7

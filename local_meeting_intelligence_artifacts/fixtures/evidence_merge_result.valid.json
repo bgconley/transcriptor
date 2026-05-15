@@ -1,0 +1,55 @@
+{
+  "meeting_id": "MEET-0001",
+  "merge_model": "mistralai/Mistral-Small-3.2-24B-Instruct-2506",
+  "prompt_version": "merge-v0.2",
+  "merged_evidence_items": [
+    {
+      "evidence_id": "REQ-0001",
+      "meeting_id": "MEET-0001",
+      "chunk_id": "CHUNK-0001",
+      "item_type": "requirement",
+      "domain": "networking",
+      "statement": "The delegated subnet must be confirmed before cutover.",
+      "explicitness": "transcript_stated",
+      "speaker": {
+        "label": "SPEAKER_01",
+        "name": null,
+        "role": null,
+        "confidence": "unknown"
+      },
+      "speaker_org": "unknown",
+      "segment_ids": [
+        "SEG-000001"
+      ],
+      "timestamp_start": "12.340",
+      "timestamp_end": "18.910",
+      "evidence_quote": "We need to confirm the delegated subnet before cutover.",
+      "quote_match_status": "exact_match",
+      "normalized_terms": [
+        "delegated subnet",
+        "cutover"
+      ],
+      "related_evidence_ids": [],
+      "confidence": "high",
+      "requires_human_review": true,
+      "review_reason": "High-impact ownership claim has unknown speaker attribution.",
+      "source_stage": "evidence_consolidation",
+      "source_evidence_ids": [
+        "REQ-0001"
+      ],
+      "extraction_model": "Qwen/Qwen3.6-27B",
+      "prompt_version": "merge-v0.2",
+      "created_at": "2026-05-15T00:00:00Z"
+    }
+  ],
+  "merge_log": [
+    {
+      "merged_into": "REQ-0001",
+      "source_evidence_ids": [
+        "REQ-0001"
+      ],
+      "reason": "Single source record retained."
+    }
+  ],
+  "ambiguities": []
+}

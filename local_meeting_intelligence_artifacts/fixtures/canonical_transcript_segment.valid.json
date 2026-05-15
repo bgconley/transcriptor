@@ -1,0 +1,23 @@
+{
+  "meeting_id": "MEET-0001",
+  "segment_id": "SEG-000001",
+  "start_time": "12.340",
+  "end_time": "18.910",
+  "speaker_label": "SPEAKER_01",
+  "speaker_name": null,
+  "speaker_org": "unknown",
+  "speaker_confidence": "unknown",
+  "raw_text": "We need to confirm the delegated subnet before cutover.",
+  "normalized_text": "We need to confirm the delegated subnet before cutover.",
+  "asr_confidence": 0.94,
+  "diarization_confidence": 0.72,
+  "overlap": false,
+  "technical_terms_detected": [
+    "delegated subnet",
+    "cutover"
+  ],
+  "correction_notes": [],
+  "source_asr": "nvidia/parakeet-tdt-0.6b-v3",
+  "source_diarization": "pyannote/speaker-diarization-community-1",
+  "recording_hash": "sha256:example"
+}

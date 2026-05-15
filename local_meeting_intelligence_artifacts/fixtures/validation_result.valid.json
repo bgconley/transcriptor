@@ -1,0 +1,38 @@
+{
+  "meeting_id": "MEET-0001",
+  "section_id": "networking_architecture",
+  "validator_model": "nvidia/Gemma-4-31B-IT-NVFP4",
+  "prompt_version": "validator-v0.2",
+  "overall_status": "pass_with_warnings",
+  "findings": [
+    {
+      "finding_id": "VAL-0001",
+      "finding_type": "missing_evidence",
+      "severity": "medium",
+      "claim_id": null,
+      "description": "Routing and firewall paths are not stated in transcript.",
+      "evidence_ids": [],
+      "segment_ids": [],
+      "required_fix": "Keep these subsections marked Not stated in transcript."
+    }
+  ],
+  "coverage": {
+    "required_topics_checked": [
+      "subnets",
+      "routing",
+      "firewall_paths",
+      "cutover_networking"
+    ],
+    "missing_topics": [
+      "routing",
+      "firewall_paths"
+    ],
+    "coverage_confidence": "medium"
+  },
+  "claim_audit": {
+    "claims_checked": 1,
+    "claims_with_required_evidence": 1,
+    "claims_missing_evidence": 0,
+    "critical_findings_count": 0
+  }
+}

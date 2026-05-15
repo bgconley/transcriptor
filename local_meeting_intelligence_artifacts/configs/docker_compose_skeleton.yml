@@ -1,0 +1,134 @@
+# Skeleton only. Do not use as-is without pinning image digests, CUDA versions,
+# model paths, model hashes, driver/runtime versions, and secrets.
+# Recommended: keep services on an internal network, pre-stage model weights in
+# a local registry, and run a host firewall egress-deny rule for the compose subnet.
+services:
+  postgres:
+    image: postgres:16@sha256:PIN_DIGEST_HERE
+    environment:
+      POSTGRES_DB: meetingintel
+      POSTGRES_USER: meetingintel
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./configs/postgres_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meetingintel -d meetingintel"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  qdrant:
+    image: qdrant/qdrant@sha256:PIN_DIGEST_HERE
+    volumes:
+      - ./data/qdrant:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  builder-96gb:
+    image: local/vllm-or-sglang-blackwell:pinned
+    environment:
+      NVIDIA_VISIBLE_DEVICES: "0"
+      HF_HUB_OFFLINE: "1"
+      MODEL_PATH: "/models/mistral-medium-3.5-128b-quant"
+      MODEL_REGISTRY: "/config/model_registry.yaml"
+      ROLE: "builder_96gb"
+    volumes:
+      - ./models:/models:ro
+      - ./outputs:/outputs
+      - ./configs/model_registry.yaml:/config/model_registry.yaml:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    networks: [internal]
+
+  extractor-4000:
+    image: local/vllm-or-sglang-blackwell:pinned
+    environment:
+      NVIDIA_VISIBLE_DEVICES: "1"
+      HF_HUB_OFFLINE: "1"
+      MODEL_PATH: "/models/qwen3.6-27b-quant"
+      MODEL_REGISTRY: "/config/model_registry.yaml"
+      ROLE: "extractor_4000"
+    volumes:
+      - ./models:/models:ro
+      - ./outputs:/outputs
+      - ./configs/model_registry.yaml:/config/model_registry.yaml:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    networks: [internal]
+
+  validator-4000:
+    image: local/vllm-or-sglang-blackwell:pinned
+    environment:
+      NVIDIA_VISIBLE_DEVICES: "2"
+      HF_HUB_OFFLINE: "1"
+      MODEL_PATH: "/models/gemma4-validator-quant"
+      MODEL_REGISTRY: "/config/model_registry.yaml"
+      ROLE: "validator_4000"
+    volumes:
+      - ./models:/models:ro
+      - ./outputs:/outputs
+      - ./configs/model_registry.yaml:/config/model_registry.yaml:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    networks: [internal]
+
+  orchestrator:
+    image: local/meeting-intel-orchestrator:pinned
+    environment:
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "meetingintel"
+      POSTGRES_USER: "meetingintel"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/postgres_password"
+      QDRANT_URL: "http://qdrant:6333"
+      BUILDER_URL: "http://builder-96gb:8000/v1"
+      EXTRACTOR_URL: "http://extractor-4000:8000/v1"
+      VALIDATOR_URL: "http://validator-4000:8000/v1"
+      NO_PUBLIC_EGRESS: "1"
+      MODEL_REGISTRY: "/config/model_registry.yaml"
+      PIPELINE_CONFIG: "/config/pipeline_config.yaml"
+      ORCHESTRATION_STATE_MACHINE: "/config/orchestrator_state_machine.yaml"
+    volumes:
+      - ./meetings:/meetings
+      - ./outputs:/outputs
+      - ./configs:/config:ro
+      - ./json_schemas:/json_schemas:ro
+    secrets:
+      - postgres_password
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      builder-96gb:
+        condition: service_started
+      extractor-4000:
+        condition: service_started
+      validator-4000:
+        condition: service_started
+    networks: [internal]
+
+networks:
+  internal:
+    internal: true
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt

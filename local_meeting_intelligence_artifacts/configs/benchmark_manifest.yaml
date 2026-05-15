@@ -1,0 +1,106 @@
+version: 0.2
+benchmark_name: local_meeting_intelligence_golden_set
+
+golden_set_requirements:
+  minimum_meetings: 5
+  preferred_meetings: 10
+  meeting_types:
+    - NC2/Azure discovery
+    - migration planning
+    - networking deep dive
+    - security/compliance review
+    - DR/BC planning
+  annotations_required:
+    - corrected_speaker_map
+    - gold_requirements
+    - gold_constraints
+    - gold_risks
+    - gold_open_questions
+    - gold_decisions
+    - gold_action_items
+    - gold_environment_facts
+    - known_bad_claims_for_validator
+    - gold_technical_terms
+    - gold_speaker_org_ownership
+    - gold_not_stated_section_expectations
+
+model_tracks:
+  extractor:
+    - Qwen3.6-27B_quant
+    - Qwen3.6-35B-A3B_quant
+    - Mistral-Small-3.2-24B_quant
+    - Gemma-4-26B-A4B_quant
+  builder:
+    - Mistral-Medium-3.5-128B_quant
+    - Mistral-Small-4-119B-NVFP4
+  validator:
+    - Gemma-4-31B-IT-NVFP4
+    - Gemma-4-26B-A4B
+    - Mistral-Small-3.2-24B
+    - Nemotron-Super-49B_if_available
+
+metrics:
+  extraction_recall:
+    weight: 20
+    target: ">=95% critical facts and >=90% all facts"
+  evidence_grounding:
+    weight: 15
+    target: "100% final claims grounded or labeled not_stated/inferred"
+  speaker_fidelity:
+    weight: 12
+    target: ">=95% high-impact attribution"
+  schema_compliance:
+    weight: 8
+    target: ">=98% first-pass valid JSON"
+  asr_technical_term_accuracy:
+    weight: 8
+    target: ">=97% critical technical terms after human correction loop"
+  diarization_quality:
+    weight: 8
+    target: ">=95% high-impact speaker ownership and no customer/Nutanix reversals"
+  hallucination_rate:
+    weight: 20
+    target: "0 critical unsupported claims"
+  inference_labeling_accuracy:
+    weight: 10
+    target: ">=95%"
+  long_context_robustness:
+    weight: 7
+    target: "No material recall loss at operating context"
+  runtime_stability:
+    weight: 5
+    target: "No repeated kernel/runtime failures"
+  verifier_seeded_bad_claim_detection:
+    weight: 3
+    target: ">=95% seeded unsupported claims caught"
+  repair_loop_success:
+    weight: 4
+    target: ">=95% validator findings resolved within max_repair_attempts"
+
+stress_tests:
+  context_windows: [8192, 16384, 32768, 65536, 98304]
+  chunk_positions:
+    - beginning
+    - middle
+    - end
+  adversarial_cases:
+    - repeated_customer_requirement_in_different_words
+    - speaker_label_ambiguous_customer_vs_nutanix
+    - technical_acronym_asr_error
+    - implied_risk_not_explicit_decision
+    - action_item_without_due_date
+    - open_question_disguised_as_comment
+    - unknown_speaker_must_not_default_to_customer
+    - unsupported_product_capability_injected_into_section
+    - quote_text_with_normalization_only_match
+
+pass_fail:
+  production_ready:
+    all_required:
+      - no_critical_unsupported_claims
+      - extraction_recall_critical_facts_at_least_95
+      - evidence_grounding_final_claims_100
+      - stable_runtime_10_repeated_runs
+      - acceptable_license_status
+      - no_customer_default_for_unknown_speaker_claims
+      - all_stage_outputs_schema_validated

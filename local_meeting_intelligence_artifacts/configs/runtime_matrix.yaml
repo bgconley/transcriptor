@@ -1,0 +1,74 @@
+version: 0.2
+purpose: runtime_candidate_matrix
+
+host_requirements:
+  driver: PIN_NVIDIA_DRIVER_VERSION
+  cuda_minimum_for_blackwell: "12.8"
+  python: "3.12"
+  container_runtime: docker_with_nvidia_container_toolkit
+  no_egress_validation: required
+
+runtime_tracks:
+  vllm:
+    version: PIN_VERSION
+    cuda_variant: PIN_CUDA_VARIANT
+    install_source: pinned_wheel_or_digest
+    acceptance_gates:
+      - model_loads_at_target_context
+      - reports_gpu_kv_cache_capacity
+      - emits_openai_compatible_chat_responses
+      - survives_10_repeated_runs
+      - no_runtime_downloads_when_offline
+    reject_if:
+      - kernel_or_attention_backend_errors_repeat
+      - context_capacity_below_operating_target
+      - json_outputs_corrupt_under_schema_harness
+
+  sglang:
+    version: PIN_VERSION
+    cuda_variant: PIN_CUDA_VARIANT
+    install_source: pinned_wheel_or_digest
+    acceptance_gates:
+      - model_loads_at_target_context
+      - openai_compatible_endpoint_available
+      - reasoning_or_thinking_tokens_excluded_from_json_outputs
+      - survives_10_repeated_runs
+    reject_if:
+      - server_generates_non_json_wrappers_for_schema_tasks
+      - context_capacity_below_operating_target
+
+  llama_cpp_gguf:
+    version: PIN_COMMIT
+    quantization_source: PIN_GGUF_SOURCE_AND_CONFIG_COMMIT
+    acceptance_gates:
+      - local_quantization_matches_correct_upstream_config
+      - builder_quality_with_golden_set_not_materially_worse
+      - output_schema_compliance_at_required_context
+    reject_if:
+      - generated_from_known_bad_model_config
+      - long_context_accuracy_degrades_materially
+
+model_runtime_tests:
+  builder_primary:
+    target_context_tokens: [32768, 65536, 98304]
+    measure:
+      - tokens_per_second
+      - peak_vram_gb
+      - kv_cache_capacity_tokens
+      - claim_grounding_accuracy
+      - omission_rate_against_gold
+  extractor_primary:
+    target_context_tokens: [8192, 16384, 32768, 65536]
+    measure:
+      - first_pass_schema_valid_rate
+      - critical_fact_recall
+      - all_fact_recall
+      - quote_match_rate
+      - unknown_speaker_misclassification_rate
+  validator_primary:
+    target_context_tokens: [8192, 16384, 32768]
+    measure:
+      - seeded_bad_claim_detection
+      - false_approval_rate
+      - false_positive_rate
+      - coverage_field_completeness

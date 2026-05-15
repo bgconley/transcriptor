@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.meeting-intelligence/schemas/claim_map.schema.json",
+  "title": "Report Claim Map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meeting_id",
+    "section_id",
+    "builder_model",
+    "prompt_version",
+    "claims"
+  ],
+  "properties": {
+    "meeting_id": {
+      "type": "string"
+    },
+    "section_id": {
+      "type": "string"
+    },
+    "builder_model": {
+      "type": "string"
+    },
+    "prompt_version": {
+      "type": "string"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "required": [
+                "explicitness"
+              ],
+              "properties": {
+                "explicitness": {
+                  "not": {
+                    "const": "not_stated"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "supporting_evidence_ids": {
+                  "minItems": 1
+                },
+                "supporting_segment_ids": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ],
+        "required": [
+          "claim_id",
+          "claim_text",
+          "explicitness",
+          "supporting_evidence_ids",
+          "supporting_segment_ids",
+          "confidence"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^CLM-[0-9]{4,}$"
+          },
+          "claim_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "explicitness": {
+            "type": "string",
+            "enum": [
+              "transcript_stated",
+              "reasonable_inference",
+              "architectural_implication",
+              "risk",
+              "open_question",
+              "not_stated"
+            ]
+          },
+          "supporting_evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supporting_segment_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

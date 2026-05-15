@@ -1,0 +1,21 @@
+{
+  "meeting_id": "MEET-0001",
+  "section_id": "networking_architecture",
+  "builder_model": "mistralai/Mistral-Medium-3.5-128B",
+  "prompt_version": "builder-v0.2",
+  "claims": [
+    {
+      "claim_id": "CLM-0001",
+      "claim_text": "The delegated subnet must be confirmed before cutover.",
+      "explicitness": "transcript_stated",
+      "supporting_evidence_ids": [
+        "REQ-0001"
+      ],
+      "supporting_segment_ids": [
+        "SEG-000001"
+      ],
+      "confidence": "high",
+      "notes": "Ownership is unknown and requires review."
+    }
+  ]
+}

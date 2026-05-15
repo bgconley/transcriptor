@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.meeting-intelligence/schemas/validation_result.schema.json",
+  "title": "Validation Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meeting_id",
+    "section_id",
+    "validator_model",
+    "prompt_version",
+    "overall_status",
+    "findings",
+    "coverage",
+    "claim_audit"
+  ],
+  "properties": {
+    "meeting_id": {
+      "type": "string"
+    },
+    "section_id": {
+      "type": "string"
+    },
+    "validator_model": {
+      "type": "string"
+    },
+    "prompt_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "pass_with_warnings",
+        "needs_repair",
+        "fail"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "finding_id",
+          "finding_type",
+          "severity",
+          "claim_id",
+          "description",
+          "required_fix"
+        ],
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "finding_type": {
+            "type": "string",
+            "enum": [
+              "unsupported_claim",
+              "overstatement",
+              "mislabeled_explicitness",
+              "missing_evidence",
+              "speaker_attribution_error",
+              "omission",
+              "contradiction",
+              "format_error",
+              "schema_error"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "claim_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "segment_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_fix": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_topics_checked",
+        "missing_topics",
+        "coverage_confidence"
+      ],
+      "properties": {
+        "required_topics_checked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missing_topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coverage_confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        }
+      }
+    },
+    "claim_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims_checked",
+        "claims_with_required_evidence",
+        "claims_missing_evidence",
+        "critical_findings_count"
+      ],
+      "properties": {
+        "claims_checked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "claims_with_required_evidence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "claims_missing_evidence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_findings_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

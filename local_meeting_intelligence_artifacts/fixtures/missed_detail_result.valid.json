@@ -1,0 +1,12 @@
+{
+  "meeting_id": "MEET-0001",
+  "chunk_id": "CHUNK-0001",
+  "scanner_model": "nvidia/Gemma-4-31B-IT-NVFP4",
+  "prompt_version": "missed-detail-v0.2",
+  "existing_evidence_ids_reviewed": [
+    "REQ-0001"
+  ],
+  "evidence_items": [],
+  "coverage_explanation": "No additional networking, security, storage, migration, risk, decision, or action-item details were found in this chunk.",
+  "coverage_confidence": "medium"
+}

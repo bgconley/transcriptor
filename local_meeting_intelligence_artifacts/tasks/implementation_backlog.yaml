@@ -1,0 +1,258 @@
+version: 0.3
+purpose: agentic_implementation_backlog
+
+execution_rules:
+  implement_in_order: true
+  acceptance_commands_required: true
+  update_runtime_matrix_with_measured_facts: true
+  preserve_pack_contracts_unless_user_approves_change: true
+
+slices:
+  - id: LMI-001
+    title: Schema harness and fixture validation
+    priority: p0
+    owner_scope:
+      - scripts/validate_pack.py
+      - json_schemas/
+      - fixtures/
+    inputs:
+      - json_schemas/*.schema.json
+      - fixtures/*.valid.json
+    outputs:
+      - schema_validation_report.json
+      - negative_fixture_report.json
+    implementation_notes:
+      - Load schemas into an offline registry keyed by both filename and $id.
+      - Validate YAML configs and JSON fixtures.
+      - Add negative tests for missing required fields, extra properties, and invalid speaker ownership.
+    acceptance_commands:
+      - python scripts/validate_pack.py
+    pass_criteria:
+      - all_schemas_compile
+      - all_positive_fixtures_pass
+      - negative_tests_fail_as_expected
+
+  - id: LMI-002
+    title: Ingest, hashing, and meeting metadata
+    priority: p0
+    owner_scope:
+      - src/ingest/
+      - tests/test_ingest*
+    inputs:
+      - audio_file
+      - meeting_metadata
+      - participant_hints
+      - known_terms
+      - permission_flag
+    outputs:
+      - meeting.json
+      - participants.json
+      - known_terms.json
+      - recording_hash
+    acceptance_commands:
+      - pytest tests/test_ingest.py
+    pass_criteria:
+      - missing_audio_rejected
+      - permission_false_rejected
+      - hash_is_stable
+      - metadata_round_trips
+
+  - id: LMI-003
+    title: Canonical transcript builder
+    priority: p0
+    owner_scope:
+      - src/transcript/
+      - tests/test_canonical_transcript*
+    inputs:
+      - asr_candidate_primary.jsonl
+      - asr_candidate_fallback.jsonl
+      - diarization.rttm
+      - speaker_map.corrected.json
+    outputs:
+      - canonical_transcript.jsonl
+      - canonical_transcript.md
+    acceptance_commands:
+      - pytest tests/test_canonical_transcript.py
+    pass_criteria:
+      - every_segment_validates
+      - unknown_speaker_stays_unknown
+      - low_confidence_ownership_flagged
+      - segment_ids_are_stable
+
+  - id: LMI-004
+    title: Model registry and offline verifier
+    priority: p0
+    owner_scope:
+      - src/model_registry/
+      - configs/model_registry.yaml
+      - tests/test_model_registry*
+    inputs:
+      - configs/model_registry.template.yaml
+      - local_model_files
+    outputs:
+      - model_registry_status.json
+      - model_hash_report.json
+      - license_status_report.json
+    acceptance_commands:
+      - pytest tests/test_model_registry.py
+    pass_criteria:
+      - missing_hash_blocks_approval
+      - unreviewed_license_blocks_production
+      - offline_mode_does_not_download
+
+  - id: LMI-005
+    title: Runtime probe and matrix update
+    priority: p0
+    owner_scope:
+      - src/runtime_probe/
+      - configs/runtime_matrix.yaml
+      - tests/test_runtime_probe*
+    inputs:
+      - model_registry.yaml
+      - target_gpu_inventory
+    outputs:
+      - runtime_probe_results.json
+      - updated_runtime_matrix.yaml
+    acceptance_commands:
+      - pytest tests/test_runtime_probe.py
+    pass_criteria:
+      - records_driver_cuda_runtime_versions
+      - records_context_capacity_and_peak_vram
+      - rejects_repeated_runtime_failures
+
+  - id: LMI-006
+    title: Domain extraction and retry/repair loop
+    priority: p1
+    owner_scope:
+      - src/extraction/
+      - prompts/
+      - tests/test_extraction*
+    inputs:
+      - canonical_transcript.jsonl
+      - prompts/01_chunk_extractor_system.txt
+      - prompts/02_domain_extractor_networking.txt
+    outputs:
+      - chunk_extraction_results.jsonl
+      - evidence_items.raw.jsonl
+      - extraction_metrics.json
+    acceptance_commands:
+      - pytest tests/test_extraction.py
+    pass_criteria:
+      - every_chunk_result_validates
+      - invalid_model_json_retried_or_rejected
+      - quote_match_rate_recorded
+      - unknown_speaker_not_defaulted_to_customer
+
+  - id: LMI-007
+    title: Missed-detail scanner and evidence merge
+    priority: p1
+    owner_scope:
+      - src/evidence/
+      - tests/test_evidence_merge*
+    inputs:
+      - evidence_items.raw.jsonl
+      - canonical_transcript.jsonl
+    outputs:
+      - missed_detail_results.jsonl
+      - evidence_merge_result.json
+      - evidence_items.merged.jsonl
+      - ambiguity_register.json
+    acceptance_commands:
+      - pytest tests/test_evidence_merge.py
+    pass_criteria:
+      - no_segment_ids_lost
+      - contradictions_not_merged
+      - ambiguity_records_created
+
+  - id: LMI-008
+    title: Persistence and retrieval
+    priority: p1
+    owner_scope:
+      - src/storage/
+      - configs/postgres_schema.sql
+      - tests/test_storage*
+      - tests/test_retrieval*
+    inputs:
+      - canonical_transcript.jsonl
+      - evidence_items.merged.jsonl
+    outputs:
+      - postgres_records
+      - qdrant_collection
+      - retrieval_metrics.json
+    acceptance_commands:
+      - pytest tests/test_storage.py tests/test_retrieval.py
+    pass_criteria:
+      - seeded_queries_retrieve_expected_evidence
+      - reranker_delta_measured
+      - database_constraints_enforced
+
+  - id: LMI-009
+    title: Section builder and claim map
+    priority: p1
+    owner_scope:
+      - src/reporting/
+      - docs/report_contract.md
+      - tests/test_report_builder*
+    inputs:
+      - evidence_registers
+      - retrieved_excerpts
+      - docs/report_contract.md
+    outputs:
+      - section_drafts.jsonl
+      - claim_maps.jsonl
+    acceptance_commands:
+      - pytest tests/test_report_builder.py
+    pass_criteria:
+      - all_sections_validate
+      - all_claims_have_evidence_or_not_stated
+      - freeform_markdown_output_rejected
+
+  - id: LMI-010
+    title: Validator, repair loop, and final assembly
+    priority: p1
+    owner_scope:
+      - src/validation/
+      - src/final_assembly/
+      - tests/test_validation*
+      - tests/test_final_assembly*
+    inputs:
+      - section_drafts.jsonl
+      - claim_maps.jsonl
+      - cited_evidence
+      - cited_transcript_segments
+    outputs:
+      - validation_results.jsonl
+      - final_report.md
+      - evidence_appendix.json
+      - requirements_register.json
+      - risk_register.json
+      - open_questions.json
+      - action_items.json
+    acceptance_commands:
+      - pytest tests/test_validation.py tests/test_final_assembly.py
+    pass_criteria:
+      - seeded_bad_claims_caught
+      - critical_findings_block_publish
+      - all_cited_evidence_exists
+      - all_19_sections_present
+
+  - id: LMI-011
+    title: Golden-set benchmark runner
+    priority: p2
+    owner_scope:
+      - src/benchmarks/
+      - configs/benchmark_manifest.yaml
+      - tests/test_benchmarks*
+    inputs:
+      - golden_meetings
+      - benchmark_manifest.yaml
+    outputs:
+      - benchmark_results.json
+      - benchmark_results.md
+      - updated_runtime_matrix.yaml
+    acceptance_commands:
+      - pytest tests/test_benchmarks.py
+    pass_criteria:
+      - metrics_match_manifest
+      - pass_fail_gate_computed
+      - model_candidate_status_updated

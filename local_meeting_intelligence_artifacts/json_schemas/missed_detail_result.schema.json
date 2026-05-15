@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.meeting-intelligence/schemas/missed_detail_result.schema.json",
+  "title": "Missed Detail Scan Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meeting_id",
+    "chunk_id",
+    "scanner_model",
+    "prompt_version",
+    "existing_evidence_ids_reviewed",
+    "evidence_items",
+    "coverage_explanation",
+    "coverage_confidence"
+  ],
+  "properties": {
+    "meeting_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "chunk_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scanner_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompt_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "existing_evidence_ids_reviewed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_items": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence_item.schema.json"
+      }
+    },
+    "coverage_explanation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coverage_confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    }
+  }
+}

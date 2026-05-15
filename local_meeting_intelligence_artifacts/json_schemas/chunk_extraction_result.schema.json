@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.meeting-intelligence/schemas/chunk_extraction_result.schema.json",
+  "title": "Chunk Extraction Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meeting_id",
+    "chunk_id",
+    "extractor_name",
+    "extraction_model",
+    "prompt_version",
+    "evidence_items",
+    "chunk_coverage_notes",
+    "output_warnings"
+  ],
+  "properties": {
+    "meeting_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "chunk_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "extractor_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string"
+    },
+    "extraction_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompt_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_items": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence_item.schema.json"
+      }
+    },
+    "chunk_coverage_notes": {
+      "type": "string"
+    },
+    "coverage_confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "output_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

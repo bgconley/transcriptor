@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.meeting-intelligence/schemas/canonical_transcript_segment.schema.json",
+  "title": "Canonical Transcript Segment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meeting_id",
+    "segment_id",
+    "start_time",
+    "end_time",
+    "speaker_label",
+    "speaker_org",
+    "speaker_confidence",
+    "raw_text",
+    "normalized_text",
+    "asr_confidence",
+    "diarization_confidence",
+    "overlap",
+    "source_asr",
+    "source_diarization",
+    "recording_hash"
+  ],
+  "properties": {
+    "meeting_id": {
+      "type": "string"
+    },
+    "segment_id": {
+      "type": "string"
+    },
+    "start_time": {
+      "type": "string"
+    },
+    "end_time": {
+      "type": "string"
+    },
+    "speaker_label": {
+      "type": "string"
+    },
+    "speaker_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "speaker_org": {
+      "type": "string",
+      "enum": [
+        "customer",
+        "nutanix",
+        "partner",
+        "unknown"
+      ]
+    },
+    "speaker_confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "raw_text": {
+      "type": "string"
+    },
+    "normalized_text": {
+      "type": "string"
+    },
+    "asr_confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "diarization_confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "overlap": {
+      "type": "boolean"
+    },
+    "technical_terms_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "correction_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_asr": {
+      "type": "string"
+    },
+    "source_diarization": {
+      "type": "string"
+    },
+    "recording_hash": {
+      "type": "string"
+    }
+  }
+}

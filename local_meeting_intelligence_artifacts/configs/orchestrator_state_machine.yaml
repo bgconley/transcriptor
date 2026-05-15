@@ -1,0 +1,89 @@
+version: 0.2
+purpose: deterministic_pipeline_state_machine
+
+global_invariants:
+  - raw_audio_hash_is_recorded_before_processing
+  - no_public_egress_after_model_download
+  - every_model_call_has_model_id_revision_prompt_version_temperature_and_seed_logged
+  - every_model_output_is_schema_validated_before_persistence
+  - unknown_speaker_org_never_defaults_to_customer
+  - final_claims_must_have_evidence_or_not_stated_label
+
+states:
+  - name: ingest
+    inputs: [audio_file, meeting_metadata, participant_hints, known_terms, permission_flag]
+    outputs: [meeting.json, participants.json, known_terms.json, recording_hash]
+    success_gate: recording_hash_present_and_permission_flag_true
+    failure_action: stop
+
+  - name: audio_preprocess
+    inputs: [audio_file]
+    outputs: [asr_audio.wav, diarization_audio_16k_mono.wav, audio_preprocess_log.json]
+    success_gate: duration_conserved_within_tolerance
+    failure_action: stop_and_keep_raw_audio
+
+  - name: asr_compare
+    inputs: [asr_audio.wav]
+    outputs: [asr_candidate_primary.jsonl, asr_candidate_fallback.jsonl, asr_disagreements.jsonl]
+    success_gate: technical_term_sampling_complete
+    failure_action: route_to_human_review
+
+  - name: diarization
+    inputs: [diarization_audio_16k_mono.wav, participant_hints]
+    outputs: [diarization.rttm, speaker_map.draft.json, overlap_flags.json]
+    success_gate: speaker_count_sanity_checked
+    failure_action: route_to_speaker_review
+
+  - name: canonical_transcript
+    inputs: [asr_candidate_primary.jsonl, asr_candidate_fallback.jsonl, diarization.rttm, speaker_map.corrected.json]
+    outputs: [canonical_transcript.jsonl, canonical_transcript.md]
+    output_schema: json_schemas/canonical_transcript_segment.schema.json
+    success_gate: every_segment_has_id_timestamp_speaker_text_hash
+    failure_action: stop
+
+  - name: domain_extraction
+    inputs: [canonical_transcript.jsonl, known_terms.json]
+    outputs: [chunk_extraction_results.jsonl, evidence_items.raw.jsonl]
+    output_schema: json_schemas/chunk_extraction_result.schema.json
+    success_gate: schema_valid_and_quote_match_rate_above_threshold
+    failure_action: retry_then_route_to_alternate_extractor
+
+  - name: missed_detail_scan
+    inputs: [canonical_transcript.jsonl, evidence_items.raw.jsonl]
+    outputs: [missed_detail_results.jsonl, evidence_items.delta.jsonl]
+    output_schema: json_schemas/missed_detail_result.schema.json
+    success_gate: every_chunk_has_scan_result
+    failure_action: retry_then_route_to_human_review
+
+  - name: evidence_consolidation
+    inputs: [evidence_items.raw.jsonl, evidence_items.delta.jsonl]
+    outputs: [evidence_merge_result.json, evidence_items.merged.jsonl, ambiguity_register.json]
+    output_schema: json_schemas/evidence_merge_result.schema.json
+    success_gate: no_segment_ids_lost_and_contradictions_preserved
+    failure_action: stop_for_merge_audit
+
+  - name: retrieval_index
+    inputs: [canonical_transcript.jsonl, evidence_items.merged.jsonl]
+    outputs: [postgres_records, qdrant_collection]
+    success_gate: seeded_retrieval_queries_pass
+    failure_action: rebuild_index
+
+  - name: section_synthesis
+    inputs: [report_contract, section_evidence, retrieved_excerpts, registers]
+    outputs: [section_drafts.jsonl]
+    output_schema: json_schemas/report_section.schema.json
+    success_gate: every_section_schema_valid_and_claims_present
+    failure_action: retry_with_stricter_prompt
+
+  - name: section_validation
+    inputs: [section_drafts.jsonl, cited_evidence, cited_transcript_segments]
+    outputs: [validation_results.jsonl]
+    output_schema: json_schemas/validation_result.schema.json
+    success_gate: no_critical_findings_and_claim_audit_complete
+    failure_action: repair_section_or_mark_review_needed
+
+  - name: final_assembly
+    inputs: [validated_sections, evidence_appendix, registers, validation_results]
+    outputs: [final_report.md, evidence_appendix.json, requirements_register.json, risk_register.json, open_questions.json, action_items.json]
+    success_gate: final_report_has_no_critical_validation_findings
+    failure_action: publish_draft_with_caveats_only

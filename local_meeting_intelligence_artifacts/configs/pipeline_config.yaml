@@ -1,0 +1,153 @@
+version: 0.2
+purpose: local_private_meeting_intelligence
+
+hardware:
+  gpu_0:
+    role: builder_96gb
+    expected_class: RTX_PRO_6000_Blackwell
+    memory_gb: 96
+    cuda_visible_devices: "0"
+  gpu_1:
+    role: extractor_4000
+    expected_class: RTX_PRO_4000_Blackwell_or_RTX_4000_Ada
+    memory_gb_if_blackwell: 24
+    memory_gb_if_ada: 20
+    cuda_visible_devices: "1"
+  gpu_2:
+    role: validator_4000
+    expected_class: RTX_PRO_4000_Blackwell_or_RTX_4000_Ada
+    memory_gb_if_blackwell: 24
+    memory_gb_if_ada: 20
+    cuda_visible_devices: "2"
+
+runtime_policy:
+  internet_egress: disabled_after_model_download
+  model_registry_required: true
+  hash_model_files: true
+  pin_cuda_driver_framework_versions: true
+  require_private_network_for_model_services: true
+  require_schema_validation_before_persistence: true
+  require_human_review_for_low_confidence_ownership: true
+  reject_unknown_speaker_org_for_final_owner_claims: true
+  blackwell_notes:
+    - validate CUDA 12.8_plus runtime compatibility
+    - test vLLM and SGLang independently
+    - keep llama.cpp/GGUF path as fallback for quantized models
+    - record actual KV-cache capacity at each target context before accepting a runtime
+
+models:
+  builder_primary:
+    name: mistralai/Mistral-Medium-3.5-128B
+    role: 96gb_section_synthesis
+    runtime_candidates: [vllm, sglang, llama_cpp_gguf]
+    quantization_required: true
+    target_context_tokens_initial: 65536
+    target_context_tokens_stress: [32768, 65536, 98304]
+    reasoning_effort: high
+  builder_fallback:
+    name: mistralai/Mistral-Small-4-119B-2603-NVFP4
+    role: 96gb_speed_builder
+    runtime_candidates: [vllm, sglang]
+    quantization_required: true
+    target_context_tokens_initial: 65536
+  extractor_primary:
+    name: Qwen/Qwen3.6-27B
+    role: chunk_domain_extraction
+    runtime_candidates: [vllm, sglang, llama_cpp_gguf]
+    quantization_required: true
+    target_context_tokens_initial: 16384
+    target_context_tokens_stress: [8192, 16384, 32768, 65536]
+    output: strict_json
+  extractor_experiment:
+    name: Qwen/Qwen3.6-35B-A3B
+    role: speed_extraction_experiment
+    runtime_candidates: [vllm, sglang, ktransformers]
+    quantization_required: true
+    target_context_tokens_initial: 16384
+  validator_primary:
+    name: nvidia/Gemma-4-31B-IT-NVFP4
+    role: independent_claim_validator
+    runtime_candidates: [vllm, sglang]
+    target_context_tokens_initial: 16384
+  validator_fallback:
+    name: google/gemma-4-26B-A4B
+    role: independent_claim_validator
+    runtime_candidates: [vllm, sglang, llama_cpp_gguf]
+    target_context_tokens_initial: 16384
+  validator_safe_fallback:
+    name: mistralai/Mistral-Small-3.2-24B-Instruct-2506
+    role: schema_and_claim_validator
+    runtime_candidates: [vllm, llama_cpp_gguf]
+  asr_primary:
+    name: nvidia/parakeet-tdt-0.6b-v3
+    role: speech_to_text
+    benchmark_against: whisper_large_v3_or_large_v3_turbo_with_whisperx
+  asr_fallback:
+    name: whisper_large_v3_or_large_v3_turbo_with_whisperx
+    role: asr_alignment
+  diarization_primary:
+    name: pyannote/speaker-diarization-community-1
+    role: diarization
+  diarization_overlap_benchmark:
+    name: BUT-FIT/diarizen-wavlm-large-s80-md-v2
+    role: overlap_diarization
+  embedding_primary:
+    name: Qwen/Qwen3-Embedding-8B
+    role: evidence_embedding
+  reranker_primary:
+    name: BAAI/bge-reranker-v2-m3
+    role: evidence_reranker
+
+tp2_policy:
+  default: disabled
+  allowed_for:
+    - extractor_primary_precision_test
+    - extractor_experiment_context_test
+    - validator_large_model_test
+  pause_validator_when_tp2_enabled: true
+  success_criteria:
+    - extraction_recall_improves_by_at_least_3_percent
+    - no_runtime_instability
+    - wall_clock_pipeline_time_not_worse_than_independent_mode
+
+chunking:
+  default_chunk_tokens: 12000
+  max_chunk_tokens_initial: 24000
+  overlap_tokens: 1200
+  boundary_policy: speaker_turn_and_topic_boundary
+  preserve_segment_ids: true
+
+validation:
+  require_exact_quote: true
+  require_segment_ids: true
+  require_explicitness_label: true
+  reject_unsupported_transcript_stated_claims: true
+  reject_customer_default_for_unknown_speaker: true
+  require_claim_map_for_every_section: true
+  require_validation_result_claim_audit: true
+  max_repair_attempts: 2
+
+schemas:
+  canonical_transcript_segment: json_schemas/canonical_transcript_segment.schema.json
+  evidence_item: json_schemas/evidence_item.schema.json
+  chunk_extraction_result: json_schemas/chunk_extraction_result.schema.json
+  missed_detail_result: json_schemas/missed_detail_result.schema.json
+  evidence_merge_result: json_schemas/evidence_merge_result.schema.json
+  report_section: json_schemas/report_section.schema.json
+  claim_map: json_schemas/claim_map.schema.json
+  validation_result: json_schemas/validation_result.schema.json
+
+artifact_paths:
+  model_registry_template: configs/model_registry.template.yaml
+  runtime_matrix: configs/runtime_matrix.yaml
+  orchestration_state_machine: configs/orchestrator_state_machine.yaml
+  storage_schema: configs/postgres_schema.sql
+  implementation_backlog: tasks/implementation_backlog.yaml
+  agent_handoff: AGENT_HANDOFF.md
+  validation_requirements: requirements-validation.txt
+  validation_script: scripts/validate_pack.py
+  report_contract: docs/report_contract.md
+  production_readiness: docs/production_readiness.md
+  testing_strategy: docs/testing_strategy.md
+  agentic_coder_review_checklist: docs/agentic_coder_review_checklist.md
+  handoff_readiness_assessment: docs/handoff_readiness_assessment.md

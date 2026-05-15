@@ -1,0 +1,36 @@
+{
+  "evidence_id": "REQ-0001",
+  "meeting_id": "MEET-0001",
+  "chunk_id": "CHUNK-0001",
+  "item_type": "requirement",
+  "domain": "networking",
+  "statement": "The delegated subnet must be confirmed before cutover.",
+  "explicitness": "transcript_stated",
+  "speaker": {
+    "label": "SPEAKER_01",
+    "name": null,
+    "role": null,
+    "confidence": "unknown"
+  },
+  "speaker_org": "unknown",
+  "segment_ids": [
+    "SEG-000001"
+  ],
+  "timestamp_start": "12.340",
+  "timestamp_end": "18.910",
+  "evidence_quote": "We need to confirm the delegated subnet before cutover.",
+  "quote_match_status": "exact_match",
+  "normalized_terms": [
+    "delegated subnet",
+    "cutover"
+  ],
+  "related_evidence_ids": [],
+  "confidence": "high",
+  "requires_human_review": true,
+  "review_reason": "High-impact ownership claim has unknown speaker attribution.",
+  "source_stage": "domain_extraction",
+  "source_evidence_ids": [],
+  "extraction_model": "Qwen/Qwen3.6-27B",
+  "prompt_version": "extractor-v0.2",
+  "created_at": "2026-05-15T00:00:00Z"
+}

@@ -1,0 +1,88 @@
+version: 0.2
+purpose: offline_model_registry_template
+
+registry_rules:
+  all_downloads_preapproved: true
+  all_model_files_hashed: true
+  no_runtime_downloads: true
+  license_review_required_before_production: true
+  store_hf_tokens_outside_repository: true
+  record_exact_revision_or_commit: true
+
+models:
+  - registry_id: builder_primary_mistral_medium_3_5_128b
+    role: builder_primary
+    source: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B
+    model_id: mistralai/Mistral-Medium-3.5-128B
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/mistral-medium-3.5-128b-quant
+    quantization: PIN_QUANTIZATION_FORMAT_AND_SOURCE
+    license: Modified MIT with large-revenue exceptions
+    license_status: needs_legal_review
+    expected_runtime: vllm_or_sglang_or_llama_cpp_after_benchmark
+    sha256_manifest: manifests/builder_primary_mistral_medium_3_5_128b.sha256
+    production_status: candidate
+
+  - registry_id: builder_fallback_mistral_small_4_119b_nvfp4
+    role: builder_fallback
+    source: https://huggingface.co/mistralai/Mistral-Small-4-119B-2603-NVFP4
+    model_id: mistralai/Mistral-Small-4-119B-2603-NVFP4
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/mistral-small-4-119b-nvfp4
+    quantization: vendor_nvfp4_checkpoint
+    license: Apache-2.0
+    license_status: review_required
+    expected_runtime: vllm_or_sglang_after_benchmark
+    sha256_manifest: manifests/builder_fallback_mistral_small_4_119b_nvfp4.sha256
+    production_status: candidate
+
+  - registry_id: extractor_primary_qwen3_6_27b
+    role: extractor_primary
+    source: https://huggingface.co/Qwen/Qwen3.6-27B
+    model_id: Qwen/Qwen3.6-27B
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/qwen3.6-27b-quant
+    quantization: PIN_QUANTIZATION_FORMAT_AND_SOURCE
+    license: Apache-2.0
+    license_status: review_required
+    expected_runtime: vllm_or_sglang_or_llama_cpp_after_benchmark
+    sha256_manifest: manifests/extractor_primary_qwen3_6_27b.sha256
+    production_status: candidate
+
+  - registry_id: validator_primary_gemma_4_31b_nvfp4
+    role: validator_primary
+    source: https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4
+    model_id: nvidia/Gemma-4-31B-IT-NVFP4
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/gemma-4-31b-it-nvfp4
+    quantization: vendor_nvfp4_checkpoint
+    license: Apache-2.0
+    license_status: review_required
+    expected_runtime: vllm_or_sglang_after_benchmark
+    sha256_manifest: manifests/validator_primary_gemma_4_31b_nvfp4.sha256
+    production_status: candidate
+
+  - registry_id: diarization_primary_pyannote_community_1
+    role: diarization_primary
+    source: https://huggingface.co/pyannote/speaker-diarization-community-1
+    model_id: pyannote/speaker-diarization-community-1
+    alternate_authorized_model_id: pyannote-community/speaker-diarization-community-1
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/pyannote-speaker-diarization-community-1
+    license: CC-BY-4.0 with gated access terms
+    license_status: access_and_attribution_required
+    expected_runtime: pyannote.audio
+    sha256_manifest: manifests/diarization_primary_pyannote_community_1.sha256
+    production_status: candidate
+
+  - registry_id: asr_primary_parakeet_tdt_0_6b_v3
+    role: asr_primary
+    source: https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
+    model_id: nvidia/parakeet-tdt-0.6b-v3
+    revision: PIN_EXACT_HF_REVISION
+    local_path: /models/parakeet-tdt-0.6b-v3
+    license: NVIDIA Open Model License or model-card governing terms
+    license_status: review_required
+    expected_runtime: nemo
+    sha256_manifest: manifests/asr_primary_parakeet_tdt_0_6b_v3.sha256
+    production_status: candidate
