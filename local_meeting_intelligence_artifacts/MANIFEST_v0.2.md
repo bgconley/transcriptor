@@ -40,6 +40,8 @@ meeting intelligence pack.
 - `docs/model_evidence_register.md`: researched source register and candidate interpretation.
 - `runs/20260515T055927Z/`: first live `LMI-000` model-fit/kernel-stress
   evidence bundle; no candidate promoted.
+- `runs/20260515T063220Z/`: `10.25.0.51` Mistral Small 4 119B NVFP4 staging
+  evidence and official Mistral Medium NVFP4 search results.
 
 ## Background Planning Artifact
 

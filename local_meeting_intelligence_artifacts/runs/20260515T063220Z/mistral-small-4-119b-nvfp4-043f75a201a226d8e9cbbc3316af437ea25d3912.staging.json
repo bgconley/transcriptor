@@ -1,0 +1,113 @@
+{
+  "event": "mistral_small_nvfp4_staged",
+  "timestamp_utc": "2026-05-15T06:41:02Z",
+  "host": "10.25.0.51",
+  "hostname": "blackbird",
+  "repo_id": "mistralai/Mistral-Small-4-119B-2603-NVFP4",
+  "revision": "043f75a201a226d8e9cbbc3316af437ea25d3912",
+  "local_dir": "/home/bgconley/models/local-meeting-intelligence/mistral-small-4-119b-nvfp4",
+  "repo_files_manifest": "/home/bgconley/models/local-meeting-intelligence/manifests/mistral-small-4-119b-nvfp4-043f75a201a226d8e9cbbc3316af437ea25d3912.repo-files.sha256",
+  "repo_file_count": 23,
+  "repo_total_bytes": 70846520016,
+  "auxiliary_files": [
+    {
+      "name": "_hf_model_info.json",
+      "bytes": 2143,
+      "purpose": "local Hugging Face metadata captured during staging"
+    }
+  ],
+  "repo_files": [
+    {
+      "name": ".gitattributes",
+      "bytes": 1618
+    },
+    {
+      "name": "README.md",
+      "bytes": 13294
+    },
+    {
+      "name": "SYSTEM_PROMPT.txt",
+      "bytes": 2372
+    },
+    {
+      "name": "chat_template.jinja",
+      "bytes": 5919
+    },
+    {
+      "name": "consolidated-00001-of-00013.safetensors",
+      "bytes": 5781786100
+    },
+    {
+      "name": "consolidated-00002-of-00013.safetensors",
+      "bytes": 5744553748
+    },
+    {
+      "name": "consolidated-00003-of-00013.safetensors",
+      "bytes": 5749272664
+    },
+    {
+      "name": "consolidated-00004-of-00013.safetensors",
+      "bytes": 5739834568
+    },
+    {
+      "name": "consolidated-00005-of-00013.safetensors",
+      "bytes": 5744552812
+    },
+    {
+      "name": "consolidated-00006-of-00013.safetensors",
+      "bytes": 5749272624
+    },
+    {
+      "name": "consolidated-00007-of-00013.safetensors",
+      "bytes": 5739834752
+    },
+    {
+      "name": "consolidated-00008-of-00013.safetensors",
+      "bytes": 5744552508
+    },
+    {
+      "name": "consolidated-00009-of-00013.safetensors",
+      "bytes": 5749272616
+    },
+    {
+      "name": "consolidated-00010-of-00013.safetensors",
+      "bytes": 5739834152
+    },
+    {
+      "name": "consolidated-00011-of-00013.safetensors",
+      "bytes": 5744550116
+    },
+    {
+      "name": "consolidated-00012-of-00013.safetensors",
+      "bytes": 7579242060
+    },
+    {
+      "name": "consolidated-00013-of-00013.safetensors",
+      "bytes": 1469648
+    },
+    {
+      "name": "consolidated.safetensors.index.json",
+      "bytes": 5090861
+    },
+    {
+      "name": "params.json",
+      "bytes": 2969
+    },
+    {
+      "name": "processor_config.json",
+      "bytes": 701
+    },
+    {
+      "name": "tekken.json",
+      "bytes": 16275354
+    },
+    {
+      "name": "tokenizer.json",
+      "bytes": 17077420
+    },
+    {
+      "name": "tokenizer_config.json",
+      "bytes": 21140
+    }
+  ]
+}

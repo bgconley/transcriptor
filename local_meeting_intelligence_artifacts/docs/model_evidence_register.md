@@ -77,6 +77,33 @@ Interpretation:
 - Gemma 26B A4B NVFP4 is technically viable as a short-context validator, but it
   needs stronger JSON forcing and more headroom before production use.
 
+### Builder Staging and Medium NVFP4 Search 20260515T063220Z
+Evidence:
+- `runs/20260515T063220Z/` records staging of
+  `mistralai/Mistral-Small-4-119B-2603-NVFP4` on `10.25.0.51` / `blackbird`.
+- The staged Small NVFP4 checkpoint is pinned to revision
+  `043f75a201a226d8e9cbbc3316af437ea25d3912`, contains 23 official repo files,
+  and totals `70,846,520,016` bytes (`65.98 GiB`) excluding the local metadata
+  sidecar.
+- The official `mistralai` NVFP4 search returned Small NVFP4 and Large NVFP4,
+  but no Medium NVFP4 artifact.
+- The official `mistralai` Medium search returned
+  `mistralai/Mistral-Medium-3.5-128B` and
+  `mistralai/Mistral-Medium-3.5-128B-EAGLE`, neither of which is an NVFP4
+  primary serving checkpoint.
+- Community Medium NVFP4 conversions were found, but they are not official
+  Mistral artifacts and must not be substituted without explicit approval.
+
+Interpretation:
+- The next first-gate action is to load-test the staged Small NVFP4 checkpoint
+  using `builder_fallback_mistral_small_4_119b_nvfp4_fit`.
+- There is no currently verified official Mistral Medium 3.5 128B NVFP4
+  checkpoint. Keep Medium as a primary quality candidate only after selecting
+  and approving a separate quantized artifact/runtime path.
+- Do not build a custom NVFP4 Medium checkpoint as part of normal pipeline
+  implementation unless a later plan explicitly approves offline quantization,
+  quality evaluation, and license/provenance controls for that artifact.
+
 ## 96GB Builder Candidates
 
 ### Mistral Medium 3.5 128B
@@ -88,6 +115,8 @@ Evidence:
 - Strong system-prompt adherence and JSON/function capabilities.
 - Modified MIT license with exceptions for companies with large revenue.
 - Source: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B
+- No official `mistralai/Mistral-Medium-3.5-128B-NVFP4` repository was found in
+  the 20260515T063220Z Hugging Face namespace search.
 
 Interpretation:
 - Best primary 96GB synthesis builder candidate.

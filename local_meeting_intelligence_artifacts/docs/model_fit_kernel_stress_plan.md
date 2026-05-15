@@ -72,6 +72,13 @@ The fallback builder is tested first because it is the most direct NVFP4
 question for the 96GB card and may become the practical builder even if the
 dense 128B candidate is higher quality.
 
+As of the 20260515T063220Z staging/search pass, no official
+`mistralai/Mistral-Medium-3.5-128B-NVFP4` artifact was found. The Medium
+profile must therefore remain `pinned_quantization_required`; do not silently
+replace it with a community NVFP4 conversion, and do not add custom NVFP4
+quantization work unless a later plan explicitly scopes provenance, quality,
+and runtime validation for that artifact.
+
 ## Stress Procedure
 
 For each profile in `configs/model_fit_matrix.yaml`:

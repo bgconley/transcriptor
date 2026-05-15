@@ -27,14 +27,14 @@ models:
     role: builder_fallback
     source: https://huggingface.co/mistralai/Mistral-Small-4-119B-2603-NVFP4
     model_id: mistralai/Mistral-Small-4-119B-2603-NVFP4
-    revision: PIN_EXACT_HF_REVISION
-    local_path: /models/mistral-small-4-119b-nvfp4
+    revision: 043f75a201a226d8e9cbbc3316af437ea25d3912
+    local_path: /home/bgconley/models/local-meeting-intelligence/mistral-small-4-119b-nvfp4
     quantization: vendor_nvfp4_checkpoint
     license: Apache-2.0
     license_status: review_required
     expected_runtime: vllm_or_sglang_after_benchmark
-    sha256_manifest: manifests/builder_fallback_mistral_small_4_119b_nvfp4.sha256
-    production_status: candidate
+    sha256_manifest: /home/bgconley/models/local-meeting-intelligence/manifests/mistral-small-4-119b-nvfp4-043f75a201a226d8e9cbbc3316af437ea25d3912.repo-files.sha256
+    production_status: staged_pending_fit
 
   - registry_id: extractor_primary_qwen3_6_27b
     role: extractor_primary
